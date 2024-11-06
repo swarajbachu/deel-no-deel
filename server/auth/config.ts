@@ -28,34 +28,23 @@ export const authOptions: NextAuthOptions = {
     },
   ],
   callbacks: {
-    async signIn({ user }) {
-      console.log("signIn", user);
+    async signIn({ user, account, credentials, profile }) {
+      console.log("singing in baby");
+      const userName = generateUsername();
+      await db
+        .insert(players)
+        .values({
+          externalId: user.id,
+          name: userName,
+        })
+        .onConflictDoNothing()
+        .catch((e) => {
+          console.error("error inserting player", e);
+        });
       return true;
     },
     async session({ session }) {
-      // if (!session.user?.name) return session;
-      // const player = await db.query.players.findFirst({
-      //   where: eq(players.externalId, session.user.name),
-      // });
-      // if (!player) {
-      //   const username = generateUsername();
-      //   const [newPlayer] = await db
-      //     .insert(players)
-      //     .values({
-      //       externalId: session.user.name,
-      //       name: username,
-      //     })
-      //     .returning();
-      //   return {
-      //     ...session,
-      //     user: {
-      //       ...session.user,
-      //       id: newPlayer.id,
-      //       name: newPlayer.name,
-      //     },
-      //   };
-      // }
-      // console.log("session", session);
+      console.log("session", session);
       return {
         ...session,
       };
