@@ -45,8 +45,17 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session }) {
       console.log("session", session);
+      const player = await db.query.players.findFirst({
+        where: eq(players.externalId, session.user?.name ?? ""),
+      });
+      if (!player) return session;
       return {
         ...session,
+        user: {
+          ...session.user,
+          id: player.id,
+          name: player.name,
+        },
       };
     },
   },

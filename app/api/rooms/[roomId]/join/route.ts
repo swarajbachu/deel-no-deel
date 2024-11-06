@@ -26,11 +26,14 @@ export async function POST(
     return NextResponse.json({ error: "Room is full" }, { status: 400 });
   }
 
-  await db.insert(players).values({
-    roomId: room.id,
-    name: playerName,
-    status: PlayerStatus.ACTIVE,
-  });
+  await db
+    .update(players)
+    .set({
+      roomId: room.id,
+      name: playerName,
+      playerStatus: PlayerStatus.ACTIVE,
+    })
+    .where(eq(players.id, playerId));
 
   if (room.players.length === 8) {
     startGame(room.id);

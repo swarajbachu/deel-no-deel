@@ -12,21 +12,21 @@ export async function POST(req: NextRequest) {
   const { playerName } = await req.json();
   console.log(playerName, "playerName");
   const session = await getServerSession(authOptions);
-  
+
   const [room] = await db
     .insert(rooms)
     .values({
-      status: GameStatus.PENDING,
+      roomStatus: GameStatus.PENDING,
       currentRound: 0,
     })
     .returning();
- 
+
   await db
     .update(players)
     .set({
       roomId: room.id,
       name: playerName,
-      status: PlayerStatus.ACTIVE,
+      playerStatus: PlayerStatus.ACTIVE,
     })
     .where(eq(players.id, "playerId"));
 
