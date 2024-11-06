@@ -25,6 +25,8 @@ const triggerVerify = () => {
 };
 
 export const VerifyBlock = () => {
+  console.log(MiniKit.isInstalled())
+
   useEffect(() => {
     if (!MiniKit.isInstalled()) {
       return;
@@ -34,6 +36,7 @@ export const VerifyBlock = () => {
       ResponseEvent.MiniAppVerifyAction,
       async (response: MiniAppVerifyActionPayload) => {
         if (response.status === "error") {
+          console.log("Error payload", response);
           return console.log("Error payload", response);
         }
 
