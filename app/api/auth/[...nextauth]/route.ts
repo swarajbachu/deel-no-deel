@@ -1,3 +1,3 @@
 import { handler } from "@/server/auth/config";
 
-export const { GET, POST } = handler
+export { handler as GET, handler as POST };
