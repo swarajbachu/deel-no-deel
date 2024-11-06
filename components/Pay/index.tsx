@@ -8,7 +8,10 @@ import {
   MiniAppPaymentPayload,
 } from "@worldcoin/minikit-js";
 import { useEffect } from "react";
-// ...
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Wallet } from "lucide-react";
+
 const sendPayment = async () => {
   const res = await fetch("/api/initiate-payment", {
     method: "POST",
@@ -16,11 +19,9 @@ const sendPayment = async () => {
 
   const { id } = await res.json();
 
-  console.log(id);
-
   const payload: PayCommandInput = {
     reference: id,
-    to: "0x0c892815f0B058E69987920A23FBb33c834289cf", // Test address
+    to: "0x0c892815f0B058E69987920A23FBb33c834289cf",
     tokens: [
       {
         symbol: Tokens.WLD,
@@ -57,10 +58,8 @@ export const PayBlock = () => {
           });
           const payment = await res.json();
           if (payment.success) {
-            // Congrats your payment was successful!
-            console.log("SUCESS!");
+            console.log("SUCCESS!");
           } else {
-            // Payment failed
             console.log("FAILED!");
           }
         }
@@ -73,8 +72,16 @@ export const PayBlock = () => {
   }, []);
 
   return (
-    <button className="bg-blue-500 p-4" onClick={sendPayment}>
-      Pay
-    </button>
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle>Make Payment</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col items-center gap-4">
+        <Button onClick={sendPayment} variant="default" className="w-full">
+          <Wallet className="mr-2" />
+          Pay with World ID
+        </Button>
+      </CardContent>
+    </Card>
   );
 };
