@@ -23,15 +23,14 @@ export interface PlayerPair {
 }
 
 export enum GameStatus {
-  WAITING = 'WAITING',
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED'
+  PENDING = 'pending',
+  ONGOING = 'ongoing',
+  ENDED = 'ended'
 }
 
 export enum PlayerStatus {
-  ACTIVE = 'ACTIVE',
-  ELIMINATED = 'ELIMINATED',
-  WINNER = 'WINNER'
+  ACTIVE = 'active',
+  IDLE = 'idle'
 }
 
 export enum CaseType {

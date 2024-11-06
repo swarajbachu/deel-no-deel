@@ -8,15 +8,12 @@ importers:
 
   .:
     dependencies:
-      '@neondatabase/serverless':
-        specifier: ^0.10.2
-        version: 0.10.2
-      '@supabase/supabase-js':
-        specifier: ^2.46.1
-        version: 2.46.1
       '@radix-ui/react-slot':
         specifier: ^1.1.0
         version: 1.1.0(@types/react@18.3.4)(react@18.3.1)
+      '@supabase/supabase-js':
+        specifier: ^2.46.1
+        version: 2.46.1
       '@worldcoin/minikit-js':
         specifier: ^1.2.0
         version: 1.2.0(@types/react@18.3.4)(react@18.3.1)(typescript@5.5.4)(viem@2.20.0(typescript@5.5.4)(zod@3.23.8))(zod@3.23.8)
@@ -52,7 +49,7 @@ importers:
         version: 14.2.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-auth:
         specifier: ^4.24.7
-        version: 4.24.7(next@14.2.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 4.24.10(next@14.2.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       postgres:
         specifier: ^3.4.5
         version: 3.4.5
@@ -115,8 +112,8 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
 
-  '@babel/runtime@7.25.4':
-    resolution: {integrity: sha512-DSgLeL/FNcpXuzav5wfYvHCGvynXkJbn3Zvc3823AEe9nPwW9IK4UoCSS5yGymmQzN0pCPvivtgS6/8U2kkm1w==}
+  '@babel/runtime@7.26.0':
+    resolution: {integrity: sha512-FDSOghenHTiToteC/QRlv2q3DhPZ/oOXTBoirfWNx1Cx3TMVcGWQtMMmQcSvb/JjpNeGzx8Pq/b4fKEJuWm1sw==}
     engines: {node: '>=6.9.0'}
 
   '@drizzle-team/brocli@0.10.2':
@@ -885,8 +882,8 @@ packages:
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
-  cookie@0.5.0:
-    resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
+  cookie@0.7.1:
+    resolution: {integrity: sha512-6DnInpx7SJ2AK3+CTUE/ZM0vWTUboZCegxhC2xiIydHR9jNuTAASBrfEpHhiGOZw/nX51bHt6YQl8jsGo4y/0w==}
     engines: {node: '>= 0.6'}
 
   cross-spawn@7.0.3:
@@ -1668,14 +1665,17 @@ packages:
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
-  next-auth@4.24.7:
-    resolution: {integrity: sha512-iChjE8ov/1K/z98gdKbn2Jw+2vLgJtVV39X+rCP5SGnVQuco7QOr19FRNGMIrD8d3LYhHWV9j9sKLzq1aDWWQQ==}
+  next-auth@4.24.10:
+    resolution: {integrity: sha512-8NGqiRO1GXBcVfV8tbbGcUgQkAGsX4GRzzXXea4lDikAsJtD5KiEY34bfhUOjHLvr6rT6afpcxw2H8EZqOV6aQ==}
     peerDependencies:
-      next: ^12.2.5 || ^13 || ^14
+      '@auth/core': 0.34.2
+      next: ^12.2.5 || ^13 || ^14 || ^15
       nodemailer: ^6.6.5
       react: ^17.0.2 || ^18
       react-dom: ^17.0.2 || ^18
     peerDependenciesMeta:
+      '@auth/core':
+        optional: true
       nodemailer:
         optional: true
 
@@ -1758,8 +1758,8 @@ packages:
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
 
-  openid-client@5.6.5:
-    resolution: {integrity: sha512-5P4qO9nGJzB5PI0LFlhj4Dzg3m4odt0qsJTfyEtZyOlkgpILwEioOhVVJOrS1iVH494S4Ee5OCjjg6Bf5WOj3w==}
+  openid-client@5.7.0:
+    resolution: {integrity: sha512-4GCCGZt1i2kTHpwvaC/sCpTpQqDnBzDzuJcJMbH+y1Q5qI8U8RBvoSh28svarXszZHR5BAMXbJPX1PGPRE3VOA==}
 
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
@@ -1905,13 +1905,13 @@ packages:
     resolution: {integrity: sha512-cDWgoah1Gez9rN3H4165peY9qfpEo+SA61oQv65O3cRUE1pOEoJWwddwcqKE8XZYjbblOJlYDlLV4h67HrEVDg==}
     engines: {node: '>=12'}
 
-  preact-render-to-string@5.2.6:
-    resolution: {integrity: sha512-JyhErpYOvBV1hEPwIxc/fHWXPfnEGdRKxc8gFdAZ7XV4tlzyzG847XAyEZqoDnynP88akM4eaHcSOzNcLWFguw==}
+  preact-render-to-string@5.2.3:
+    resolution: {integrity: sha512-aPDxUn5o3GhWdtJtW0svRC2SS/l8D9MAgo2+AWml+BhDImb27ALf04Q2d+AHqUUOc6RdSXFIBVa2gxzgMKgtZA==}
     peerDependencies:
       preact: '>=10'
 
-  preact@10.23.2:
-    resolution: {integrity: sha512-kKYfePf9rzKnxOAKDpsWhg/ysrHPqT+yQ7UW4JjdnqjFIeNUnNcEJvhuA8fDenxAGWzUqtd51DfVg7xp/8T9NA==}
+  preact@10.11.3:
+    resolution: {integrity: sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==}
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -2370,7 +2370,7 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@babel/runtime@7.25.4':
+  '@babel/runtime@7.26.0':
     dependencies:
       regenerator-runtime: 0.14.1
 
@@ -2585,6 +2585,7 @@ snapshots:
   '@neondatabase/serverless@0.10.2':
     dependencies:
       '@types/pg': 8.11.6
+    optional: true
 
   '@next/env@14.2.6': {}
 
@@ -2737,6 +2738,7 @@ snapshots:
       '@types/node': 20.16.1
       pg-protocol: 1.7.0
       pg-types: 4.0.2
+    optional: true
 
   '@types/phoenix@1.6.5': {}
 
@@ -3053,7 +3055,7 @@ snapshots:
 
   concat-map@0.0.1: {}
 
-  cookie@0.5.0: {}
+  cookie@0.7.1: {}
 
   cross-spawn@7.0.3:
     dependencies:
@@ -3353,7 +3355,7 @@ snapshots:
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.9.0(eslint@8.57.0)
       eslint-plugin-react: 7.35.0(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.0)
@@ -3377,7 +3379,7 @@ snapshots:
       enhanced-resolve: 5.17.1
       eslint: 8.57.0
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.6
       is-core-module: 2.15.1
@@ -3399,7 +3401,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -3964,17 +3966,17 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next-auth@4.24.7(next@14.2.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next-auth@4.24.10(next@14.2.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      '@babel/runtime': 7.25.4
+      '@babel/runtime': 7.26.0
       '@panva/hkdf': 1.2.1
-      cookie: 0.5.0
+      cookie: 0.7.1
       jose: 4.15.9
       next: 14.2.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       oauth: 0.9.15
-      openid-client: 5.6.5
-      preact: 10.23.2
-      preact-render-to-string: 5.2.6(preact@10.23.2)
+      openid-client: 5.7.0
+      preact: 10.11.3
+      preact-render-to-string: 5.2.3(preact@10.11.3)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       uuid: 8.3.2
@@ -4055,7 +4057,8 @@ snapshots:
       define-properties: 1.2.1
       es-object-atoms: 1.0.0
 
-  obuf@1.1.2: {}
+  obuf@1.1.2:
+    optional: true
 
   oidc-token-hash@5.0.3: {}
 
@@ -4063,7 +4066,7 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
-  openid-client@5.6.5:
+  openid-client@5.7.0:
     dependencies:
       jose: 4.15.9
       lru-cache: 6.0.0
@@ -4108,11 +4111,14 @@ snapshots:
 
   path-type@4.0.0: {}
 
-  pg-int8@1.0.1: {}
+  pg-int8@1.0.1:
+    optional: true
 
-  pg-numeric@1.0.2: {}
+  pg-numeric@1.0.2:
+    optional: true
 
-  pg-protocol@1.7.0: {}
+  pg-protocol@1.7.0:
+    optional: true
 
   pg-types@4.0.2:
     dependencies:
@@ -4123,6 +4129,7 @@ snapshots:
       postgres-date: 2.1.0
       postgres-interval: 3.0.0
       postgres-range: 1.1.4
+    optional: true
 
   picocolors@1.0.1: {}
 
@@ -4177,26 +4184,31 @@ snapshots:
       picocolors: 1.0.1
       source-map-js: 1.2.0
 
-  postgres-array@3.0.2: {}
+  postgres-array@3.0.2:
+    optional: true
 
   postgres-bytea@3.0.0:
     dependencies:
       obuf: 1.1.2
+    optional: true
 
-  postgres-date@2.1.0: {}
+  postgres-date@2.1.0:
+    optional: true
 
-  postgres-interval@3.0.0: {}
+  postgres-interval@3.0.0:
+    optional: true
 
-  postgres-range@1.1.4: {}
+  postgres-range@1.1.4:
+    optional: true
 
   postgres@3.4.5: {}
 
-  preact-render-to-string@5.2.6(preact@10.23.2):
+  preact-render-to-string@5.2.3(preact@10.11.3):
     dependencies:
-      preact: 10.23.2
+      preact: 10.11.3
       pretty-format: 3.8.0
 
-  preact@10.23.2: {}
+  preact@10.11.3: {}
 
   prelude-ls@1.2.1: {}
 
