@@ -5,15 +5,21 @@ import {
   integer,
   boolean,
   uuid,
+  pgEnum,
+  varchar,
 } from "drizzle-orm/pg-core";
+import { nanoid } from "nanoid";
 import { relations } from "drizzle-orm/relations";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-
+export const roomStatusEnum = pgEnum("status", ["pending", "ongoing", "ended"]);
 export const rooms = pgTable("rooms", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  status: text("status").notNull(),
-  currentRound: integer("current_round").notNull().default(0),
+  id: varchar('id')
+  .$default(() => nanoid(6))
+  .primaryKey(),
+  status: roomStatusEnum("status").notNull().default("pending"),
+  entryPrice: integer("entry_price").notNull().default(0),
+  humanTouch: boolean("human_touch").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -30,9 +36,10 @@ export const roomsInsert = createInsertSchema(rooms);
 
 export const players = pgTable("players", {
   id: uuid("id").primaryKey().defaultRandom(),
-  roomId: uuid("room_id").references(() => rooms.id),
+  roomId: varchar("room_id").references(() => rooms.id),
   name: text("name").notNull(),
   status: text("status").notNull(),
+  externalId: text("external_id").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -48,7 +55,7 @@ export const playersRelations = relations(players, ({ one }) => ({
 
 export const pairs = pgTable("pairs", {
   id: uuid("id").primaryKey().defaultRandom(),
-  roomId: uuid("room_id").references(() => rooms.id),
+  roomId: varchar("room_id").references(() => rooms.id),
   player1Id: uuid("player1_id").references(() => players.id),
   player2Id: uuid("player2_id").references(() => players.id),
   caseHolderId: uuid("case_holder_id").references(() => players.id),
