@@ -12,13 +12,17 @@ import { nanoid } from "nanoid";
 import { relations } from "drizzle-orm/relations";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-export const roomStatusEnum = pgEnum("roomStatus", ["pending", "ongoing", "ended"]);
+export const roomStatusEnum = pgEnum("room_status", [
+  "pending",
+  "ongoing",
+  "ended",
+]);
 
 export const rooms = pgTable("rooms", {
   id: varchar("id")
     .$default(() => nanoid(6))
     .primaryKey(),
-  roomStatus: roomStatusEnum("roomStatus").notNull().default("pending"),
+  roomStatus: roomStatusEnum().notNull().default("pending"),
   currentRound: integer("current_round").notNull().default(0),
   entryPrice: integer("entry_price").notNull().default(0),
   humanTouch: boolean("human_touch").notNull().default(false),
@@ -36,14 +40,13 @@ export const roomsSelect = createSelectSchema(rooms).extend({
 });
 export const roomsInsert = createInsertSchema(rooms);
 
-export const playersStatusEnum = pgEnum("playerStatus", ["active", "idle"]);
+export const playersStatusEnum = pgEnum("player_status", ["active", "idle"]);
 
 export const players = pgTable("players", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  id: text("id").primaryKey(),
   roomId: varchar("room_id").references(() => rooms.id),
   name: text("name").notNull(),
-  playerStatus: playersStatusEnum("playerStatus").notNull().default("idle"),
-  externalId: text("external_id").notNull(),
+  playerStatus: playersStatusEnum().notNull().default("idle"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -57,14 +60,15 @@ export const playersRelations = relations(players, ({ one }) => ({
   }),
 }));
 
-export const caseTypeEnum = pgEnum("case_type", ["SAFE", "ELIMINATE"]);
+export const caseTypeEnum = pgEnum("caseType", ["SAFE", "ELIMINATE"]);
+
 export const pairs = pgTable("pairs", {
   id: uuid("id").primaryKey().defaultRandom(),
   roomId: varchar("room_id").references(() => rooms.id),
-  player1Id: uuid("player1_id").references(() => players.id),
-  player2Id: uuid("player2_id").references(() => players.id),
-  caseHolderId: uuid("case_holder_id").references(() => players.id),
-  caseType: caseTypeEnum("case_type").notNull(),
+  player1Id: text("player1_id").references(() => players.id),
+  player2Id: text("player2_id").references(() => players.id),
+  caseHolderId: text("case_holder_id").references(() => players.id),
+  caseType: caseTypeEnum().notNull(),
   completed: boolean("completed").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

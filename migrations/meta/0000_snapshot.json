@@ -1,5 +1,5 @@
 {
-  "id": "3411e98f-8dce-4c7c-93f0-3a0a0ade3d2c",
+  "id": "c1b8a71c-28c9-4a3d-8ecf-7a4a9eb6546d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -23,25 +23,25 @@
         },
         "player1_id": {
           "name": "player1_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
         "player2_id": {
           "name": "player2_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
         "case_holder_id": {
           "name": "case_holder_id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "case_type": {
-          "name": "case_type",
-          "type": "case_type",
+        "caseType": {
+          "name": "caseType",
+          "type": "caseType",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
@@ -135,10 +135,9 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "text",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "room_id": {
           "name": "room_id",
@@ -154,17 +153,11 @@
         },
         "playerStatus": {
           "name": "playerStatus",
-          "type": "playerStatus",
+          "type": "player_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
           "default": "'idle'"
-        },
-        "external_id": {
-          "name": "external_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -208,7 +201,7 @@
         },
         "roomStatus": {
           "name": "roomStatus",
-          "type": "roomStatus",
+          "type": "room_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
@@ -260,24 +253,24 @@
     }
   },
   "enums": {
-    "public.case_type": {
-      "name": "case_type",
+    "public.caseType": {
+      "name": "caseType",
       "schema": "public",
       "values": [
         "SAFE",
         "ELIMINATE"
       ]
     },
-    "public.playerStatus": {
-      "name": "playerStatus",
+    "public.player_status": {
+      "name": "player_status",
       "schema": "public",
       "values": [
         "active",
         "idle"
       ]
     },
-    "public.roomStatus": {
-      "name": "roomStatus",
+    "public.room_status": {
+      "name": "room_status",
       "schema": "public",
       "values": [
         "pending",

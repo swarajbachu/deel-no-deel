@@ -1,30 +1,29 @@
-CREATE TYPE "public"."case_type" AS ENUM('SAFE', 'ELIMINATE');--> statement-breakpoint
-CREATE TYPE "public"."playerStatus" AS ENUM('active', 'idle');--> statement-breakpoint
-CREATE TYPE "public"."roomStatus" AS ENUM('pending', 'ongoing', 'ended');--> statement-breakpoint
+CREATE TYPE "public"."caseType" AS ENUM('SAFE', 'ELIMINATE');--> statement-breakpoint
+CREATE TYPE "public"."player_status" AS ENUM('active', 'idle');--> statement-breakpoint
+CREATE TYPE "public"."room_status" AS ENUM('pending', 'ongoing', 'ended');--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "pairs" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"room_id" varchar,
-	"player1_id" uuid,
-	"player2_id" uuid,
-	"case_holder_id" uuid,
-	"case_type" "case_type" NOT NULL,
+	"player1_id" text,
+	"player2_id" text,
+	"case_holder_id" text,
+	"caseType" "caseType" NOT NULL,
 	"completed" boolean DEFAULT false,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "players" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
 	"room_id" varchar,
 	"name" text NOT NULL,
-	"playerStatus" "playerStatus" DEFAULT 'idle' NOT NULL,
-	"external_id" text NOT NULL,
+	"playerStatus" "player_status" DEFAULT 'idle' NOT NULL,
 	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "rooms" (
 	"id" varchar PRIMARY KEY NOT NULL,
-	"roomStatus" "roomStatus" DEFAULT 'pending' NOT NULL,
+	"roomStatus" "room_status" DEFAULT 'pending' NOT NULL,
 	"current_round" integer DEFAULT 0 NOT NULL,
 	"entry_price" integer DEFAULT 0 NOT NULL,
 	"human_touch" boolean DEFAULT false NOT NULL,

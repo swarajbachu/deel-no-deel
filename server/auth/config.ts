@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions = {
       await db
         .insert(players)
         .values({
-          externalId: user.id,
+          id: user.id,
           name: userName,
         })
         .onConflictDoNothing()
@@ -64,14 +64,14 @@ export const authOptions: NextAuthOptions = {
     async session({ session }) {
       console.log("session", session);
       const player = await db.query.players.findFirst({
-        where: eq(players.externalId, session.user?.name ?? ""),
+        where: eq(players.id, session.user?.name ?? ""),
       });
       if (!player) return session;
       return {
         ...session,
         user: {
           ...session.user,
-          id: player.externalId,
+          id: player.id,
           name: player.name,
         },
       };
