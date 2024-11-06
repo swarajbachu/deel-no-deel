@@ -9,17 +9,25 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.2",
     "@worldcoin/minikit-js": "0.0.27-internal-alpha",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.36.0",
+    "drizzle-zod": "^0.5.1",
     "eruda": "^3.2.3",
     "next": "14.2.6",
     "next-auth": "^4.24.7",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "ws": "^8.18.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/ws": "^8.5.13",
+    "drizzle-kit": "^0.27.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.6",
     "postcss": "^8",
