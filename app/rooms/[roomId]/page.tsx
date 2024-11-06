@@ -1,34 +1,41 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { notFound, useParams } from "next/navigation";
-import { Room, Player, PlayerPair } from "@/types/game";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Check, X, Users, Crown } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { getRoom } from "@/server/actions/round";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getRoom, joinRoom } from "@/server/actions/round";
 import { useSession } from "next-auth/react";
 import { Badge } from "@/components/ui/badge";
 
 export default function RoomPage() {
   const params = useParams();
   const session = useSession();
+  const queryClient = useQueryClient();
   const { data: room, isPending } = useQuery({
     queryKey: ["room", params.roomId],
     queryFn: () => getRoom({ roomId: params.roomId as string }),
   });
 
-  const joinRoom = async () => {
-    const playerId = Math.random().toString(36).substring(7);
-    const response = await fetch(`/api/rooms/${params.roomId}/join`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ playerId }),
-    });
-    const updatedRoom = await response.json();
-  };
+  const { mutateAsync: joinRoomMutation, isPending: joiningRoom } = useMutation(
+    {
+      mutationFn: ({
+        roomId,
+        playerId,
+      }: {
+        roomId: string;
+        playerId: string;
+      }) => joinRoom(roomId, playerId),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["room", params.roomId] });
+      },
+      onError: (error) => {
+        console.log(error, "error");
+      },
+    }
+  );
 
   const handleDecision = async (decision: boolean) => {
     const currentPair = room?.pairs.find((p) => p.pairStatus === "ongoing");
@@ -40,12 +47,13 @@ export default function RoomPage() {
     });
     const updatedRoom = await response.json();
   };
+  console.log(session.data?.user, "session.data.user");
 
-  if (!session) {
+  if (!session.data?.user.id) {
     return <div>Please login to join the game</div>;
   }
   if (isPending) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
   if (!room) return notFound();
 
@@ -61,7 +69,16 @@ export default function RoomPage() {
           <CardTitle>Join Game</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <Button onClick={joinRoom} className="w-full">
+          <Button
+            onClick={async () =>
+              await joinRoomMutation({
+                roomId: params.roomId as string,
+                playerId: session.data.user.id,
+              })
+            }
+            disabled={joiningRoom}
+            className="w-full"
+          >
             <Users className="mr-2 h-4 w-4" />
             Join Game
           </Button>
