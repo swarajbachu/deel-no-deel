@@ -1,4 +1,8 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
+import { db } from "../db/db";
+import { players } from "../db/schema";
+import { eq } from "drizzle-orm";
+import { generateUsername } from "unique-username-generator";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -28,8 +32,36 @@ export const authOptions: NextAuthOptions = {
       console.log("signIn", user);
       return true;
     },
-    async session({ session }) {
-      return session;
+    async session({ session, user }) {
+      const player = await db.query.players.findFirst({
+        where: eq(players.externalId, user.id),
+      });
+      if (!player) {
+        const username = generateUsername();
+        const [newPlayer] = await db
+          .insert(players)
+          .values({
+            externalId: user.id,
+            name: username,
+          })
+          .returning();
+        return {
+          ...session,
+          user: {
+            ...session.user,
+            id: newPlayer.id,
+            name: newPlayer.name,
+          },
+        };
+      }
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: player.id,
+          name: player.name,
+        },
+      };
     },
   },
   debug: process.env.NODE_ENV === "development",
