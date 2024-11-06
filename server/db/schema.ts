@@ -36,7 +36,7 @@ export const roomsInsert = createInsertSchema(rooms);
 
 export const players = pgTable("players", {
   id: uuid("id").primaryKey().defaultRandom(),
-  roomId: uuid("room_id").references(() => rooms.id),
+  roomId: varchar("room_id").references(() => rooms.id),
   name: text("name").notNull(),
   status: text("status").notNull(),
   externalId: text("external_id").notNull(),
@@ -55,7 +55,7 @@ export const playersRelations = relations(players, ({ one }) => ({
 
 export const pairs = pgTable("pairs", {
   id: uuid("id").primaryKey().defaultRandom(),
-  roomId: uuid("room_id").references(() => rooms.id),
+  roomId: varchar("room_id").references(() => rooms.id),
   player1Id: uuid("player1_id").references(() => players.id),
   player2Id: uuid("player2_id").references(() => players.id),
   caseHolderId: uuid("case_holder_id").references(() => players.id),
