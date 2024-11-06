@@ -3,12 +3,15 @@ import { Room, GameStatus, PlayerStatus } from "@/types/game";
 import { db } from "@/server/db/db";
 import { rooms, players } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/server/auth/config";
 
 const roomsLocal = new Map<string, Room>();
 
 export async function POST(req: NextRequest) {
   const { playerName } = await req.json();
   console.log(playerName, "playerName");
+  const session = await getServerSession(authOptions);
 
   const [room] = await db
     .insert(rooms)
