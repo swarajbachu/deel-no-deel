@@ -26,6 +26,7 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user }) {
+      console.log("signIn", user);
       return true;
     },
   },
