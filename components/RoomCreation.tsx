@@ -1,51 +1,57 @@
-"use client";
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Users } from "lucide-react";
+import { useState } from 'react'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useRouter } from 'next/navigation'
 
-export const RoomCreation = () => {
-  const [playerName, setPlayerName] = useState('');
-  const router = useRouter();
+export default function CreateRoomForm() {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
-  const createRoom = async () => {
-    if (!playerName.trim()) return;
-    
-    const playerId = crypto.randomUUID();
-    const response = await fetch('/api/rooms', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ playerId, playerName })
-    });
-    
-    const { roomId } = await response.json();
-    router.push(`/rooms/${roomId}`);
-  };
+  const handleCreateRoom = async () => {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/rooms', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create room')
+      }
+
+      const data = await response.json()
+      router.push(`/room/${data.roomId}`) // Redirect to the newly created room
+    } catch (err) {
+      setError('An error occurred while creating the room. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>Create Game Room</CardTitle>
+        <CardTitle>Create a New Room</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <Input
-          type="text"
-          value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
-          placeholder="Enter your name"
-        />
+      <CardContent>
         <Button 
-          onClick={createRoom}
+          onClick={handleCreateRoom} 
+          disabled={isLoading}
           className="w-full"
-          disabled={!playerName.trim()}
         >
-          <Users className="mr-2 h-4 w-4" />
-          Create Room
+          {isLoading ? 'Creating...' : 'Create Room'}
         </Button>
+        {error && (
+          <p className="text-red-500 mt-2 text-sm">{error}</p>
+        )}
       </CardContent>
     </Card>
-  );
-}; 
+  )
+}
