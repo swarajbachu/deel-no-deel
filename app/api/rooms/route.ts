@@ -13,20 +13,23 @@ export async function POST(req: NextRequest) {
   const [room] = await db
     .insert(rooms)
     .values({
-      status: GameStatus.WAITING,
+      status: GameStatus.PENDING,
       currentRound: 0,
     })
     .returning();
 
-  await db.insert(players).values({
-    roomId: room.id,
-    name: playerName,
-    status: PlayerStatus.ACTIVE,
-  });
+  await db
+    .update(players)
+    .set({
+      roomId: room.id,
+      name: playerName,
+      status: PlayerStatus.ACTIVE,
+    })
+    .where(eq(players.id, "playerId"));
 
   return NextResponse.json({ roomId: room.id });
 }
-  
+
 export async function GET() {
   return NextResponse.json(Array.from(roomsLocal.values()));
 }

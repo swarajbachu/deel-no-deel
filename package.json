@@ -11,7 +11,6 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^0.10.2",
     "@supabase/supabase-js": "^2.46.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@worldcoin/minikit-js": "^1.2.0",
