@@ -12,13 +12,13 @@ import { nanoid } from "nanoid";
 import { relations } from "drizzle-orm/relations";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
-export const roomStatusEnum = pgEnum("status", ["pending", "ongoing", "ended"]);
+export const roomStatusEnum = pgEnum("roomStatus", ["pending", "ongoing", "ended"]);
 
 export const rooms = pgTable("rooms", {
   id: varchar("id")
     .$default(() => nanoid(6))
     .primaryKey(),
-  status: roomStatusEnum("status").notNull().default("pending"),
+  roomStatus: roomStatusEnum("roomStatus").notNull().default("pending"),
   currentRound: integer("current_round").notNull().default(0),
   entryPrice: integer("entry_price").notNull().default(0),
   humanTouch: boolean("human_touch").notNull().default(false),
@@ -36,13 +36,13 @@ export const roomsSelect = createSelectSchema(rooms).extend({
 });
 export const roomsInsert = createInsertSchema(rooms);
 
-export const playersStatusEnum = pgEnum("status", ["active", "idle"]);
+export const playersStatusEnum = pgEnum("playerStatus", ["active", "idle"]);
 
 export const players = pgTable("players", {
   id: uuid("id").primaryKey().defaultRandom(),
   roomId: varchar("room_id").references(() => rooms.id),
   name: text("name").notNull(),
-  status: playersStatusEnum("status").notNull().default("idle"),
+  playerStatus: playersStatusEnum("playerStatus").notNull().default("idle"),
   externalId: text("external_id").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
