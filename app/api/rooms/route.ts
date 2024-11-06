@@ -7,23 +7,9 @@ import { eq } from "drizzle-orm";
 const roomsLocal = new Map<string, Room>();
 
 export async function POST(req: NextRequest) {
-  const { playerName } = await req.json();
-  console.log(playerName, "playerName");
-
-  const [room] = await db
-    .insert(rooms)
-    .values({
-      status: GameStatus.WAITING,
-      currentRound: 0,
-    })
-    .returning();
-
-  await db.insert(players).values({
-    roomId: room.id,
-    name: playerName,
-    status: PlayerStatus.ACTIVE,
-  });
-
+  const { playerExternalId, } = await req.json();
+  console.log(playerExternalId, "playerName");
+  
   return NextResponse.json({ roomId: room.id });
 }
   
