@@ -61,10 +61,16 @@ export const playersRelations = relations(players, ({ one }) => ({
 }));
 
 export const caseTypeEnum = pgEnum("caseType", ["SAFE", "ELIMINATE"]);
+export const pairStatusEnum = pgEnum("pair_status", [
+  "pending",
+  "ongoing",
+  "ended",
+]);
 
 export const pairs = pgTable("pairs", {
   id: uuid("id").primaryKey().defaultRandom(),
   roomId: varchar("room_id").references(() => rooms.id),
+  pairStatus: pairStatusEnum().notNull().default("pending"),
   player1Id: text("player1_id").references(() => players.id),
   player2Id: text("player2_id").references(() => players.id),
   caseHolderId: text("case_holder_id").references(() => players.id),

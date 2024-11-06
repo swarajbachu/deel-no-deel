@@ -17,7 +17,7 @@ export const SignIn = () => {
             <p className="text-muted-foreground">
               Signed in as{" "}
               <span className="font-medium text-foreground">
-                {session?.user?.name?.slice(0, 10)}
+                {session?.user?.name}
               </span>
             </p>
             <Button variant="destructive" onClick={() => signOut()}>

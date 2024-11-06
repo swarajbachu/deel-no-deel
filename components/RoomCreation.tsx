@@ -27,7 +27,7 @@ export default function CreateRoomForm() {
       }
 
       const data = await response.json()
-      router.push(`/room/${data.roomId}`) // Redirect to the newly created room
+      router.push(`/rooms/${data.roomId}`) // Redirect to the newly created room
     } catch (err) {
       setError('An error occurred while creating the room. Please try again.')
     } finally {
