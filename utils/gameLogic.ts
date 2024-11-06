@@ -24,7 +24,7 @@ export async function startGame(roomId: string) {
   await db
     .update(rooms)
     .set({
-      status: GameStatus.IN_PROGRESS,
+      roomStatus: GameStatus.ONGOING,
       currentRound: 1,
     })
     .where(eq(rooms.id, roomId));
@@ -39,7 +39,7 @@ export async function startGame(roomId: string) {
       player1Id: shuffledPlayers[i].id,
       player2Id: shuffledPlayers[i + 1].id,
       completed: false,
-      round: 1,
+      caseType: CaseType.SAFE,
     });
   }
 
@@ -104,7 +104,7 @@ export async function processPairResult(pairId: string, decision: boolean) {
   // Update player status
   await db
     .update(players)
-    .set({ status: PlayerStatus.ELIMINATED })
+    .set({ playerStatus: PlayerStatus.IDLE })
     .where(eq(players.id, eliminatedPlayerId));
 
   // Mark pair as completed
