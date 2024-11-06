@@ -42,7 +42,7 @@ export const players = pgTable("players", {
   id: uuid("id").primaryKey().defaultRandom(),
   roomId: varchar("room_id").references(() => rooms.id),
   name: text("name").notNull(),
-  status: playersStatusEnum("status").notNull().default("active"),
+  status: playersStatusEnum("status").notNull().default("idle"),
   externalId: text("external_id").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
