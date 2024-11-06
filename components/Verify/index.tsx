@@ -7,17 +7,20 @@ import {
   ISuccessResult,
 } from "@worldcoin/minikit-js";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Shield } from "lucide-react";
 
 export type VerifyCommandInput = {
   action: string;
   signal?: string;
-  verification_level?: VerificationLevel; // Default: Orb
+  verification_level?: VerificationLevel;
 };
 
 const verifyPayload: VerifyCommandInput = {
-  action: "test-action", // This is your action ID from the Developer Portal
+  action: "test-action",
   signal: "",
-  verification_level: VerificationLevel.Orb, // Orb | Device
+  verification_level: VerificationLevel.Orb,
 };
 
 const triggerVerify = () => {
@@ -25,8 +28,6 @@ const triggerVerify = () => {
 };
 
 export const VerifyBlock = () => {
-  console.log(MiniKit.isInstalled())
-
   useEffect(() => {
     if (!MiniKit.isInstalled()) {
       return;
@@ -37,23 +38,21 @@ export const VerifyBlock = () => {
       async (response: MiniAppVerifyActionPayload) => {
         if (response.status === "error") {
           console.log("Error payload", response);
-          return console.log("Error payload", response);
+          return;
         }
 
-        // Verify the proof in the backend
         const verifyResponse = await fetch("/api/verify", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            payload: response as ISuccessResult, // Parses only the fields we need to verify
+            payload: response as ISuccessResult,
             action: verifyPayload.action,
-            signal: verifyPayload.signal, // Optional
+            signal: verifyPayload.signal,
           }),
         });
 
-        // TODO: Handle Success!
         const verifyResponseJson = await verifyResponse.json();
         if (verifyResponseJson.status === 200) {
           console.log("Verification success!");
@@ -67,11 +66,16 @@ export const VerifyBlock = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Verify Block</h1>
-      <button className="bg-green-500 p-4" onClick={triggerVerify}>
-        Test Verify
-      </button>
-    </div>
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle>Verify Identity</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col items-center gap-4">
+        <Button onClick={triggerVerify} className="w-full">
+          <Shield className="mr-2" />
+          Verify with World ID
+        </Button>
+      </CardContent>
+    </Card>
   );
 };

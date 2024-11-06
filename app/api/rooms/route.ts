@@ -10,23 +10,23 @@ export async function POST(req: NextRequest) {
   const { playerName } = await req.json();
   console.log(playerName, "playerName");
 
-  // const [room] = await db
-  //   .insert(rooms)
-  //   .values({
-  //     status: GameStatus.WAITING,
-  //     currentRound: 0,
-  //   })
-  //   .returning();
+  const [room] = await db
+    .insert(rooms)
+    .values({
+      status: GameStatus.WAITING,
+      currentRound: 0,
+    })
+    .returning();
 
-  // await db.insert(players).values({
-  //   roomId: room.id,
-  //   name: playerName,
-  //   status: PlayerStatus.ACTIVE,
-  // });
+  await db.insert(players).values({
+    roomId: room.id,
+    name: playerName,
+    status: PlayerStatus.ACTIVE,
+  });
 
-  return NextResponse.json({ roomId: 'room.id' });
+  return NextResponse.json({ roomId: room.id });
 }
-
+  
 export async function GET() {
   return NextResponse.json(Array.from(roomsLocal.values()));
 }
