@@ -2,9 +2,8 @@
 
 import { notFound, useParams } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Check, X, Users, Crown } from "lucide-react";
+import { Users, Crown } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRoom, joinRoom } from "@/server/actions/round";
 import { useSession } from "next-auth/react";
@@ -15,6 +14,7 @@ import ActivePair from "@/components/game/ActivePair";
 import { GAME_CONFIG } from "@/config/gameConfig";
 import GameProgress from "@/components/game/GameProgress";
 import { PairsWithPlayerAndCaseHolder } from "@/server/db/schema";
+import { useSupabaseSubscription } from '@/hooks/useSupabaseSubscription'
 
 export default function RoomPage() {
   const params = useParams();
@@ -23,25 +23,61 @@ export default function RoomPage() {
   const { data: room, isPending } = useQuery({
     queryKey: ["room", params.roomId],
     queryFn: () => getRoom({ roomId: params.roomId as string }),
+    refetchInterval: 3000,
   });
 
-  const { mutateAsync: joinRoomMutation, isPending: joiningRoom } = useMutation(
-    {
-      mutationFn: ({
-        roomId,
-        playerId,
-      }: {
-        roomId: string;
-        playerId: string;
-      }) => joinRoom(roomId, playerId),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["room", params.roomId] });
-      },
-      onError: (error) => {
-        console.log(error, "error");
-      },
-    }
-  );
+  useSupabaseSubscription({ 
+    roomId: params.roomId as string, 
+    table: 'rooms' 
+  });
+  useSupabaseSubscription({ 
+    roomId: params.roomId as string, 
+    table: 'pairs' 
+  });
+  useSupabaseSubscription({ 
+    roomId: params.roomId as string, 
+    table: 'players' 
+  });
+
+  const { mutateAsync: joinRoomMutation, isPending: joiningRoom } = useMutation({
+    mutationFn: ({
+      roomId,
+      playerId,
+    }: {
+      roomId: string;
+      playerId: string;
+    }) => joinRoom(roomId, playerId),
+    onMutate: async (variables) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['room', params.roomId] });
+      
+      // Snapshot the previous value
+      const previousRoom = queryClient.getQueryData(['room', params.roomId]);
+      
+      // Optimistically update room
+      queryClient.setQueryData(['room', params.roomId], (old: any) => ({
+        ...old,
+        players: [...old.players, {
+          id: variables.playerId,
+          roomId: variables.roomId,
+          name: session.data?.user.name,
+          playerStatus: 'active',
+        }],
+      }));
+      
+      return { previousRoom };
+    },
+    onError: (err, variables, context) => {
+      // Revert the optimistic update
+      if (context?.previousRoom) {
+        queryClient.setQueryData(['room', params.roomId], context.previousRoom);
+      }
+    },
+    onSettled: () => {
+      // Refetch to ensure consistency
+      queryClient.invalidateQueries({ queryKey: ['room', params.roomId] });
+    },
+  });
 
   const handleDecision = async (decision: boolean) => {
     const currentPair = room?.pairs.find((p) => p.pairStatus === "ongoing");
@@ -52,38 +88,14 @@ export default function RoomPage() {
       body: JSON.stringify({ decision }),
     });
     const updatedRoom = await response.json();
+    queryClient.invalidateQueries({ queryKey: ["room", params.roomId] });
   };
-  console.log(session.data?.user, "session.data.user");
-
-  useEffect(() => {
-    const channel = supabaseClient
-      .channel(`join_room:${params.roomId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "rooms",
-          filter: "id=eq." + params.roomId,
-        },
-        async (payload) => {
-          console.log(payload);
-          await queryClient.invalidateQueries({
-            queryKey: ["room", params.roomId],
-          });
-        }
-      )
-      .subscribe();
-    return () => {
-      supabaseClient.removeChannel(channel);
-    };
-  }, [supabaseClient, params.roomId, queryClient]);
 
   if (!session.data?.user.id) {
-    return <div>Please login to join the game</div>
+    return <div>Please login to join the game</div>;
   }
   if (isPending) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
   if (!room) return notFound();
 
@@ -181,6 +193,7 @@ export default function RoomPage() {
             currentRound={room.currentRound}
             totalRounds={GAME_CONFIG.ROUNDS_MAP[GAME_CONFIG.PLAYERS_PER_ROOM]}
             pairs={room.pairs as PairsWithPlayerAndCaseHolder[]}
+            isLoading={isPending}
           />
         )}
       </div>

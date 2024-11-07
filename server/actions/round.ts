@@ -28,23 +28,22 @@ export async function getRoom({ roomId }: { roomId: string }) {
 }
 
 export async function joinRoom(roomId: string, playerId: string) {
-  console.log(roomId, playerId, "roomId, playerId");
   const room = await db.query.rooms.findFirst({
     where: eq(rooms.id, roomId),
     with: {
       players: true,
     },
   });
-  console.log(room, "room generated");
 
   if (!room) {
-    return { error: "Room not found" };
+    throw new Error("Room not found");
   }
 
   if (room.players.length >= GAME_CONFIG.PLAYERS_PER_ROOM) {
-    return { error: "Room is full" };
+    throw new Error("Room is full");
   }
 
+  // Update player
   await db
     .update(players)
     .set({
@@ -53,9 +52,12 @@ export async function joinRoom(roomId: string, playerId: string) {
     })
     .where(eq(players.id, playerId));
 
+  // Start game if room is full
   if (room.players.length === GAME_CONFIG.PLAYERS_PER_ROOM - 1) {
-    startGame(room.id);
+    await startGame(room.id);
   }
 
-  return room;
+  // Fetch updated room data
+  const updatedRoom = await getRoom({ roomId });
+  return updatedRoom;
 }
