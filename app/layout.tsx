@@ -4,6 +4,8 @@ import "./globals.css";
 import MiniKitProvider from "@/components/minikit-provider";
 import dynamic from "next/dynamic";
 import NextAuthProvider from "@/components/next-auth-provider";
+import Header from "@/components/layout/header";
+import Footer from "@/components/layout/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -28,7 +30,11 @@ export default function RootLayout({
         <NextAuthProvider>
           <ErudaProvider>
             <MiniKitProvider>
-              <body className={inter.className}>{children}</body>
+              <body className={inter.className}>
+                <Header />
+                {children}
+                <Footer />
+                </body>
             </MiniKitProvider>
           </ErudaProvider>
         </NextAuthProvider>

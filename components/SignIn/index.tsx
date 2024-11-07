@@ -7,11 +7,12 @@ export const SignIn = () => {
   const { data: session } = useSession();
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Authentication</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col items-center gap-4">
+    // <Card className="w-full max-w-md">
+    //   <CardHeader>
+    //     <CardTitle>Authentication</CardTitle>
+    //   </CardHeader>
+    //   <CardContent className="flex flex-col items-center gap-4">
+    <>
         {session ? (
           <>
             <p className="text-muted-foreground">
@@ -26,11 +27,12 @@ export const SignIn = () => {
           </>
         ) : (
           <>
-            <p className="text-muted-foreground">Not signed in</p>
-            <Button onClick={() => signIn()}>Sign in with Worldcoin</Button>
+            {/* <p className="text-muted-foreground">Not signed in</p> */}
+            <Button  onClick={() => signIn()}>Sign in with Worldcoin</Button>
           </>
         )}
-      </CardContent>
-    </Card>
+        </>
+    //   </CardContent>
+    // </Card>
   );
 };
