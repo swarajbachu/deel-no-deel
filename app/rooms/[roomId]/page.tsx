@@ -9,6 +9,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRoom, joinRoom } from "@/server/actions/round";
 import { useSession } from "next-auth/react";
 import { Badge } from "@/components/ui/badge";
+import { useEffect } from "react";
+import { supabaseClient } from "@/lib/supabase-client";
 import ActivePair from "@/components/game/ActivePair";
 import { GAME_CONFIG } from "@/config/gameConfig";
 
@@ -16,7 +18,7 @@ export default function RoomPage() {
   const params = useParams();
   const session = useSession();
   const queryClient = useQueryClient();
-  const { data: room, isPending } = useQuery({
+  const { data: room,isPending } = useQuery({
     queryKey: ["room", params.roomId],
     queryFn: () => getRoom({ roomId: params.roomId as string }),
   });
@@ -51,6 +53,23 @@ export default function RoomPage() {
   };
   console.log(session.data?.user, "session.data.user");
 
+
+   
+  useEffect(()=>{
+    const channel = supabaseClient.channel(`join_room:${params.roomId}`).on('postgres_changes',{
+      event:"UPDATE",
+      schema: 'public',
+      table: 'rooms',
+      filter: 'id=eq.'+params.roomId,
+    },async (payload)=>{
+      console.log(payload);
+      await queryClient.invalidateQueries({ queryKey: ["room", params.roomId] });
+    }).subscribe()
+    return ()=> {
+      supabaseClient.removeChannel(channel)
+    }
+  },[supabaseClient,params.roomId,queryClient])
+
   if (!session.data?.user.id) {
     return <div>Please login to join the game</div>;
   }
@@ -58,6 +77,8 @@ export default function RoomPage() {
     return <div>Loading...</div>;
   }
   if (!room) return notFound();
+
+ 
 
   const player = room.players.find((p) => p.id === session.data?.user.id);
 
