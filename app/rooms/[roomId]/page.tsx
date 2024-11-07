@@ -1,9 +1,9 @@
 "use client";
 
-import { notFound, useParams } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Crown } from "lucide-react";
+import { Users, Crown, ExternalLink } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRoom, joinRoom } from "@/server/actions/round";
 import { useSession } from "next-auth/react";
@@ -17,11 +17,13 @@ import { PairsWithPlayerAndCaseHolder } from "@/server/db/schema";
 import { useSupabaseSubscription } from '@/hooks/useSupabaseSubscription'
 import { useLocalStorage } from 'usehooks-ts'
 import { sendPayment } from "@/utils/utils"
+
 export default function RoomPage() {
   const params = useParams();
+  const router = useRouter();
   const session = useSession();
   const queryClient = useQueryClient();
-  const [paidRooms,setPaidRooms] = useLocalStorage<string[]>('paid-rooms',[])
+  const [paidRooms, setPaidRooms] = useLocalStorage<string[]>('paid-rooms', [])
   
   const { data: room, isPending } = useQuery({
     queryKey: ["room", params.roomId],
@@ -45,45 +47,6 @@ export default function RoomPage() {
 
   const hasPaid = paidRooms.includes(params.roomId as string)
 
-  const { mutateAsync: joinRoomMutation, isPending: joiningRoom } = useMutation({
-    mutationFn: ({
-      roomId,
-      playerId,
-    }: {
-      roomId: string;
-      playerId: string;
-    }) => joinRoom(roomId, playerId),
-    onMutate: async (variables) => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['room', params.roomId] });
-      
-      // Snapshot the previous value
-      const previousRoom = queryClient.getQueryData(['room', params.roomId]);
-      
-      // Optimistically update room
-      queryClient.setQueryData(['room', params.roomId], (old: any) => ({
-        ...old,
-        players: [...old.players, {
-          id: variables.playerId,
-          roomId: variables.roomId,
-          name: session.data?.user.name,
-          playerStatus: 'active',
-        }],
-      }));
-      
-      return { previousRoom };
-    },
-    onError: (err, variables, context) => {
-      // Revert the optimistic update
-      if (context?.previousRoom) {
-        queryClient.setQueryData(['room', params.roomId], context.previousRoom);
-      }
-    },
-    onSettled: () => {
-      // Refetch to ensure consistency
-      queryClient.invalidateQueries({ queryKey: ['room', params.roomId] });
-    },
-  });
   const { mutateAsync: joinRoomMutation, isPending: joiningRoom } = useMutation(
     {
       mutationFn: ({
@@ -94,13 +57,8 @@ export default function RoomPage() {
         playerId: string;
       }) => joinRoom(roomId, playerId),
       onMutate: async (variables) => {
-        // Cancel outgoing refetches
         await queryClient.cancelQueries({ queryKey: ["room", params.roomId] });
-
-        // Snapshot the previous value
         const previousRoom = queryClient.getQueryData(["room", params.roomId]);
-
-        // Optimistically update room
         queryClient.setQueryData(["room", params.roomId], (old: any) => ({
           ...old,
           players: [
@@ -113,11 +71,9 @@ export default function RoomPage() {
             },
           ],
         }));
-
         return { previousRoom };
       },
       onError: (err, variables, context) => {
-        // Revert the optimistic update
         if (context?.previousRoom) {
           queryClient.setQueryData(
             ["room", params.roomId],
@@ -126,7 +82,6 @@ export default function RoomPage() {
         }
       },
       onSettled: () => {
-        // Refetch to ensure consistency
         queryClient.invalidateQueries({ queryKey: ["room", params.roomId] });
       },
     }
@@ -139,8 +94,6 @@ export default function RoomPage() {
     return <div>Loading...</div>;
   }
   if (!room) return notFound();
-
-
 
   const player = room.players.find((p) => p.id === session.data?.user.id);
 
@@ -179,7 +132,7 @@ export default function RoomPage() {
   }
 
   const activePair = room.pairs.find((p) => p.pairStatus === "ongoing");
-  console.log({room})
+
   return (
     <div className="container mx-auto max-w-4xl py-8 px-4">
       <h1 className="text-3xl font-bold mb-8">Game Room</h1>
@@ -213,6 +166,16 @@ export default function RoomPage() {
                   <Crown className="h-5 w-5 text-yellow-500" />
                   <p className="text-xl font-semibold">{room.winner.name}</p>
                 </div>
+                {room.transactionId && (
+                  <Button
+                    variant="outline"
+                    className="mt-2"
+                    onClick={() => router.push(`https://worldscan.org/tx/${room.transactionId}`)}
+                  >
+                    Show Payout Proof
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </Button>
+                )}
               </div>
             )}
           </CardContent>

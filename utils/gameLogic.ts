@@ -3,6 +3,9 @@ import { PairInsert, pairs, players, rooms } from "@/server/db/schema";
 import { CaseType, GameStatus, PlayerStatus } from "@/types/game";
 import { eq, sql } from "drizzle-orm";
 import { GAME_CONFIG } from "@/config/gameConfig";
+import { createPublicClient, createWalletClient, erc20Abi, http, parseEther } from 'viem';
+import { mainnet, worldchain } from 'viem/chains';
+import { privateKeyToAccount } from 'viem/accounts';
 
 export async function startGame(roomId: string) {
   const room = await db.query.rooms.findFirst({
@@ -75,20 +78,43 @@ export async function assignCase(pairId: string) {
   console.log("finalPair", finalPair);
 }
 
-async function sendTransactionToAddress(players: number, recipientAddress: `0x${string}`): Promise<string> {
+async function sendTransactionToAddress(players: number, recipientAddress: `0x${string}`) {
  
 
 
   // Calculate the amount based on the number of players
   const amountToSend = players * 0.1;
-  const etherValue = parseDec(amountToSend.toString());
+  const finalValue = amountToSend * 1_000_000
+
+  const walletClient = createWalletClient({
+    chain: worldchain,
+    transport: http(
+      process.env.RPC_URL
+    ),
+    account: privateKeyToAccount(process.env.KEY as `0x${string}`), // Replace with your private key securely stored
+  });
+  const client = createPublicClient({
+    chain: worldchain,
+    transport: http(process.env.RPC_URL),
+  });
+  
+  
 
   // Send the transaction
   try {
-    const transactionHash = await walletClient.sendTransaction({
-      to: recipientAddress,
-      value: etherValue,
-    });
+ 
+    const transactionHash = await walletClient.writeContract({
+      abi:erc20Abi,
+      address:"0x79a02482a880bce3f13e09da970dc34db4cd24d1",
+      functionName:"transfer",
+      args:[
+        recipientAddress,
+        BigInt(finalValue)
+      ]
+    })
+    // const receipt = await client.getTransactionReceipt({
+    //   hash: transactionHash
+    // })
 
     console.log('Transaction sent with hash:', transactionHash);
     return transactionHash;
@@ -196,7 +222,13 @@ async function checkAndStartNextPairOrRound(roomId: string) {
           winnerId: winnerId,
         })
         .where(eq(rooms.id, roomId));
-
+      const winnerPlayer = room.players.find((p) => p.id === winnerId);
+      if(winnerPlayer?.walletAddress){
+        const txReceipt = await sendTransactionToAddress(room.players.length,winnerPlayer.walletAddress as `0x${string}`)
+        if(txReceipt){
+          await db.update(rooms).set({transactionId:txReceipt}).where(eq(rooms.id,roomId)) 
+        }
+      }
       
       // Update all players to idle
       await db

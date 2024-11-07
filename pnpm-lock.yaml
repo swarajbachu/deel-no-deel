@@ -22,10 +22,10 @@ importers:
         version: 5.59.20(react@18.3.1)
       '@worldcoin/minikit-js':
         specifier: ^1.2.0
-        version: 1.2.0(@types/react@18.3.4)(react@18.3.1)(typescript@5.5.4)(viem@2.20.0(typescript@5.5.4)(zod@3.23.8))(zod@3.23.8)
+        version: 1.2.0(@types/react@18.3.4)(react@18.3.1)(typescript@5.5.4)(viem@2.21.42(typescript@5.5.4)(zod@3.23.8))(zod@3.23.8)
       '@worldcoin/minikit-react':
         specifier: ^1.2.0
-        version: 1.2.0(@tanstack/react-query@5.59.20(react@18.3.1))(@types/react@18.3.4)(react@18.3.1)(typescript@5.5.4)(viem@2.20.0(typescript@5.5.4)(zod@3.23.8))(zod@3.23.8)
+        version: 1.2.0(@tanstack/react-query@5.59.20(react@18.3.1))(@types/react@18.3.4)(react@18.3.1)(typescript@5.5.4)(viem@2.21.42(typescript@5.5.4)(zod@3.23.8))(zod@3.23.8)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -80,6 +80,9 @@ importers:
       usehooks-ts:
         specifier: ^3.1.0
         version: 3.1.0(react@18.3.1)
+      viem:
+        specifier: ^2.21.42
+        version: 2.21.42(typescript@5.5.4)(zod@3.23.8)
       ws:
         specifier: ^8.18.0
         version: 8.18.0
@@ -120,8 +123,8 @@ importers:
 
 packages:
 
-  '@adraffy/ens-normalize@1.10.0':
-    resolution: {integrity: sha512-nA9XHtlAkYfJxY7bce8DcN7eKxWWCWkU+1GR9d+U6MbNpfwQp8TI7vqOsBsMcHoT4mBu2kypKoSKnghEzOOq5Q==}
+  '@adraffy/ens-normalize@1.11.0':
+    resolution: {integrity: sha512-/3DDPKHqqIqxUULp8yP4zODUY1i+2xvVWsv8A79xGWdCAG+8sb0hRh0Rk2QyOJUnnbyPUAZYcpBuRe3nS2OIUg==}
 
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
@@ -528,12 +531,13 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@noble/curves@1.4.0':
-    resolution: {integrity: sha512-p+4cb332SFCrReJkCYe8Xzm0OWi4Jji5jVdIZRL/PmacmDkFNw6MrrV+gGpiPxLHbV+zKFRywUWbaseT+tZRXg==}
+  '@noble/curves@1.6.0':
+    resolution: {integrity: sha512-TlaHRXDehJuRNR9TfZDNQ45mMEd5dwUwmicsafcIX4SsNiqnCHKjE/1alYPd/lDRVhxdhUAlv8uEhMCI5zjIJQ==}
+    engines: {node: ^14.21.3 || >=16}
 
-  '@noble/hashes@1.4.0':
-    resolution: {integrity: sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg==}
-    engines: {node: '>= 16'}
+  '@noble/hashes@1.5.0':
+    resolution: {integrity: sha512-1j6kQFb7QRru7eKN3ZDvRcP13rugwdxZqCjbiAVZfIJwgj2A65UmT4TgARXGlXgnRkORLTDTrO19ZErt7+QXgA==}
+    engines: {node: ^14.21.3 || >=16}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -613,11 +617,14 @@ packages:
   '@scure/base@1.1.7':
     resolution: {integrity: sha512-PPNYBslrLNNUQ/Yad37MHYsNQtK67EhWb6WtSvNLLPo7SdVZgkUjD6Dg+5On7zNwmskf8OX7I7Nx5oN+MIWE0g==}
 
-  '@scure/bip32@1.4.0':
-    resolution: {integrity: sha512-sVUpc0Vq3tXCkDGYVWGIZTRfnvu8LoTDaev7vbwh0omSvVORONr960MQWdKqJDCReIEmTj3PAr73O3aoxz7OPg==}
+  '@scure/base@1.1.9':
+    resolution: {integrity: sha512-8YKhl8GHiNI/pU2VMaofa2Tor7PJRAjwQLBBuilkJ9L5+13yVbC7JO/wS7piioAvPSwR3JKM1IJ/u4xQzbcXKg==}
 
-  '@scure/bip39@1.3.0':
-    resolution: {integrity: sha512-disdg7gHuTDZtY+ZdkmLpPCk7fxZSu3gBiEGuoC1XYxv9cGx3Z6cpTggCgW6odSOOIXCiDjuGejW+aJKCY/pIQ==}
+  '@scure/bip32@1.5.0':
+    resolution: {integrity: sha512-8EnFYkqEQdnkuGBVpCzKxyIwDCBLDVj3oiX0EKUFre/tOjL/Hqba1D6n/8RcmaQy4f95qQFrO2A8Sr6ybh4NRw==}
+
+  '@scure/bip39@1.4.0':
+    resolution: {integrity: sha512-BEEm6p8IueV/ZTfQLp/0vhw4NPnT9oWf5+28nvmeUICjP99f4vr2d+qc7AVGDDtwRep6ifR43Yed9ERVmiITzw==}
 
   '@supabase/auth-js@2.65.1':
     resolution: {integrity: sha512-IA7i2Xq2SWNCNMKxwmPlHafBQda0qtnFr8QnyyBr+KaSxoXXqEzFCnQ1dGTy6bsZjVBgXu++o3qrDypTspaAPw==}
@@ -730,17 +737,6 @@ packages:
       '@tanstack/react-query': '>=5.0.0'
       react: '>=18'
       viem: ^2.0.0
-
-  abitype@1.0.5:
-    resolution: {integrity: sha512-YzDhti7cjlfaBhHutMaboYB21Ha3rXR9QTkNJFzYC4kC8YclaiwPBBBJY8ejFdu2wnJeZCVZSMlQJ7fi8S6hsw==}
-    peerDependencies:
-      typescript: '>=5.0.4'
-      zod: ^3 >=3.22.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-      zod:
-        optional: true
 
   abitype@1.0.6:
     resolution: {integrity: sha512-MMSqYh4+C/aVqI2RQaWqbvI4Kxo5cQV40WQ4QFtDnNzCkqChm8MuENhElmynZlO0qUy/ObkEUaXtKqYnx1Kp3A==}
@@ -1587,8 +1583,8 @@ packages:
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
-  isows@1.0.4:
-    resolution: {integrity: sha512-hEzjY+x9u9hPmBom9IIAqdJCwNLax+xrPb51vEPpERoFlIxgmZcHzsT5jKG06nvInKOBGvReAVz80Umed5CczQ==}
+  isows@1.0.6:
+    resolution: {integrity: sha512-lPHCayd40oW98/I0uvgaHKWCSvkzY27LjWLbtzOm64yQ+G3Q5npjjbdppU65iZXkK1Zt+kH9pfegli0AYfwYYw==}
     peerDependencies:
       ws: '*'
 
@@ -2334,16 +2330,16 @@ packages:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
 
-  viem@2.20.0:
-    resolution: {integrity: sha512-cM4vs81HnSNbfceI1MLkx4pCVzbVjl9xiNSv5SCutYjUyFFOVSPDlEyhpg2iHinxx1NM4Qne3END5eLT8rvUdg==}
+  viem@2.21.42:
+    resolution: {integrity: sha512-PWBb3iaVFAzLWUaNrYLweOGwHPTQid5J4HfERh/WjJgixbAFwb4ZEc1leRfygvgJPtqUGdYNapvw9b2k2FoCAg==}
     peerDependencies:
       typescript: '>=5.0.4'
     peerDependenciesMeta:
       typescript:
         optional: true
 
-  webauthn-p256@0.0.5:
-    resolution: {integrity: sha512-drMGNWKdaixZNobeORVIqq7k5DsRC9FnG201K2QjeOoQLmtSDaSsVZdkg6n5jUALJKcAG++zBPJXmv6hy0nWFg==}
+  webauthn-p256@0.0.10:
+    resolution: {integrity: sha512-EeYD+gmIT80YkSIDb2iWq0lq2zbHo1CxHlQTeJ+KkCILWpVy3zASH3ByD4bopzfk0uCwXxLqKGLqp2W4O28VFA==}
 
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
@@ -2385,18 +2381,6 @@ packages:
 
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
-
-  ws@8.17.1:
-    resolution: {integrity: sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
 
   ws@8.18.0:
     resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
@@ -2442,7 +2426,7 @@ packages:
 
 snapshots:
 
-  '@adraffy/ens-normalize@1.10.0': {}
+  '@adraffy/ens-normalize@1.11.0': {}
 
   '@alloc/quick-lru@5.2.0': {}
 
@@ -2696,11 +2680,11 @@ snapshots:
   '@next/swc-win32-x64-msvc@14.2.6':
     optional: true
 
-  '@noble/curves@1.4.0':
+  '@noble/curves@1.6.0':
     dependencies:
-      '@noble/hashes': 1.4.0
+      '@noble/hashes': 1.5.0
 
-  '@noble/hashes@1.4.0': {}
+  '@noble/hashes@1.5.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -2761,16 +2745,18 @@ snapshots:
 
   '@scure/base@1.1.7': {}
 
-  '@scure/bip32@1.4.0':
+  '@scure/base@1.1.9': {}
+
+  '@scure/bip32@1.5.0':
     dependencies:
-      '@noble/curves': 1.4.0
-      '@noble/hashes': 1.4.0
+      '@noble/curves': 1.6.0
+      '@noble/hashes': 1.5.0
       '@scure/base': 1.1.7
 
-  '@scure/bip39@1.3.0':
+  '@scure/bip39@1.4.0':
     dependencies:
-      '@noble/hashes': 1.4.0
-      '@scure/base': 1.1.7
+      '@noble/hashes': 1.5.0
+      '@scure/base': 1.1.9
 
   '@supabase/auth-js@2.65.1':
     dependencies:
@@ -2904,7 +2890,7 @@ snapshots:
     dependencies:
       browser-or-node: 3.0.0-pre.0
       buffer: 6.0.3
-      viem: 2.20.0(typescript@5.5.4)(zod@3.23.8)
+      viem: 2.21.42(typescript@5.5.4)(zod@3.23.8)
       zustand: 4.5.5(@types/react@18.3.4)(react@18.3.1)
     transitivePeerDependencies:
       - '@types/react'
@@ -2915,11 +2901,11 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@worldcoin/minikit-js@1.2.0(@types/react@18.3.4)(react@18.3.1)(typescript@5.5.4)(viem@2.20.0(typescript@5.5.4)(zod@3.23.8))(zod@3.23.8)':
+  '@worldcoin/minikit-js@1.2.0(@types/react@18.3.4)(react@18.3.1)(typescript@5.5.4)(viem@2.21.42(typescript@5.5.4)(zod@3.23.8))(zod@3.23.8)':
     dependencies:
       '@worldcoin/idkit-core': 1.3.0(@types/react@18.3.4)(react@18.3.1)(typescript@5.5.4)(zod@3.23.8)
       abitype: 1.0.6(typescript@5.5.4)(zod@3.23.8)
-      viem: 2.20.0(typescript@5.5.4)(zod@3.23.8)
+      viem: 2.21.42(typescript@5.5.4)(zod@3.23.8)
     transitivePeerDependencies:
       - '@types/react'
       - bufferutil
@@ -2929,15 +2915,15 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@worldcoin/minikit-react@1.2.0(@tanstack/react-query@5.59.20(react@18.3.1))(@types/react@18.3.4)(react@18.3.1)(typescript@5.5.4)(viem@2.20.0(typescript@5.5.4)(zod@3.23.8))(zod@3.23.8)':
+  '@worldcoin/minikit-react@1.2.0(@tanstack/react-query@5.59.20(react@18.3.1))(@types/react@18.3.4)(react@18.3.1)(typescript@5.5.4)(viem@2.21.42(typescript@5.5.4)(zod@3.23.8))(zod@3.23.8)':
     dependencies:
       '@tanstack/react-query': 5.59.20(react@18.3.1)
       '@worldcoin/idkit-core': 1.3.0(@types/react@18.3.4)(react@18.3.1)(typescript@5.5.4)(zod@3.23.8)
-      '@worldcoin/minikit-js': 1.2.0(@types/react@18.3.4)(react@18.3.1)(typescript@5.5.4)(viem@2.20.0(typescript@5.5.4)(zod@3.23.8))(zod@3.23.8)
+      '@worldcoin/minikit-js': 1.2.0(@types/react@18.3.4)(react@18.3.1)(typescript@5.5.4)(viem@2.21.42(typescript@5.5.4)(zod@3.23.8))(zod@3.23.8)
       abitype: 1.0.6(typescript@5.5.4)(zod@3.23.8)
       react: 18.3.1
       turbo: 2.2.3
-      viem: 2.20.0(typescript@5.5.4)(zod@3.23.8)
+      viem: 2.21.42(typescript@5.5.4)(zod@3.23.8)
     transitivePeerDependencies:
       - '@types/react'
       - bufferutil
@@ -2945,11 +2931,6 @@ snapshots:
       - typescript
       - utf-8-validate
       - zod
-
-  abitype@1.0.5(typescript@5.5.4)(zod@3.23.8):
-    optionalDependencies:
-      typescript: 5.5.4
-      zod: 3.23.8
 
   abitype@1.0.6(typescript@5.5.4)(zod@3.23.8):
     optionalDependencies:
@@ -3943,9 +3924,9 @@ snapshots:
 
   isexe@2.0.0: {}
 
-  isows@1.0.4(ws@8.17.1):
+  isows@1.0.6(ws@8.18.0):
     dependencies:
-      ws: 8.17.1
+      ws: 8.18.0
 
   iterator.prototype@1.1.2:
     dependencies:
@@ -4718,17 +4699,17 @@ snapshots:
 
   uuid@8.3.2: {}
 
-  viem@2.20.0(typescript@5.5.4)(zod@3.23.8):
+  viem@2.21.42(typescript@5.5.4)(zod@3.23.8):
     dependencies:
-      '@adraffy/ens-normalize': 1.10.0
-      '@noble/curves': 1.4.0
-      '@noble/hashes': 1.4.0
-      '@scure/bip32': 1.4.0
-      '@scure/bip39': 1.3.0
-      abitype: 1.0.5(typescript@5.5.4)(zod@3.23.8)
-      isows: 1.0.4(ws@8.17.1)
-      webauthn-p256: 0.0.5
-      ws: 8.17.1
+      '@adraffy/ens-normalize': 1.11.0
+      '@noble/curves': 1.6.0
+      '@noble/hashes': 1.5.0
+      '@scure/bip32': 1.5.0
+      '@scure/bip39': 1.4.0
+      abitype: 1.0.6(typescript@5.5.4)(zod@3.23.8)
+      isows: 1.0.6(ws@8.18.0)
+      webauthn-p256: 0.0.10
+      ws: 8.18.0
     optionalDependencies:
       typescript: 5.5.4
     transitivePeerDependencies:
@@ -4736,10 +4717,10 @@ snapshots:
       - utf-8-validate
       - zod
 
-  webauthn-p256@0.0.5:
+  webauthn-p256@0.0.10:
     dependencies:
-      '@noble/curves': 1.4.0
-      '@noble/hashes': 1.4.0
+      '@noble/curves': 1.6.0
+      '@noble/hashes': 1.5.0
 
   webidl-conversions@3.0.1: {}
 
@@ -4805,8 +4786,6 @@ snapshots:
       strip-ansi: 7.1.0
 
   wrappy@1.0.2: {}
-
-  ws@8.17.1: {}
 
   ws@8.18.0: {}
 

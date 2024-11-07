@@ -58,7 +58,7 @@ export default function CreateRoomForm() {
           className="w-full"
         >
           {isLoading ? 'Creating...' : 'Create Room'}
-        </Button> : <Button onClick={handlePay} className="w-full">Pay 0.01 USDCE</Button>}
+        </Button> : <Button onClick={handlePay} className="w-full">Pay 0.1 USDCE</Button>}
         {error && (
           <p className="text-red-500 mt-2 text-sm">{error}</p>
         )}
