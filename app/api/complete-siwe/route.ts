@@ -27,9 +27,11 @@ export const POST = async (req: NextRequest) => {
 	}
 	try {
 		const validMessage = await verifySiweMessage(payload, nonce)
-        await db.update(players).set({
+        const updatedPlayer = await db.update(players).set({
             walletAddress: payload.address,
-        }).where(eq(players.id, session?.user.id));
+        }).where(eq(players.id, session?.user.id)).returning();
+		console.log(updatedPlayer);
+		
 		return NextResponse.json({
 			status: 'success',
 			isValid: validMessage.isValid,
