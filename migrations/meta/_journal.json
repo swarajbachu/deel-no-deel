@@ -36,6 +36,20 @@
       "when": 1730998475803,
       "tag": "0004_fast_rage",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1731010382212,
+      "tag": "0005_elite_the_stranger",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1731012938437,
+      "tag": "0006_kind_chameleon",
+      "breakpoints": true
     }
   ]
 }

@@ -66,3 +66,21 @@ export async function makeDecision(pairId: string, takeCase: boolean) {
   await processPairResult(pairId, takeCase);
   return pairId;
 }
+
+
+export async function createDailyRoom() {
+  const options = {};
+  return new Promise((resolve, reject) => {
+    return fetch(`https://api.daily.co/v1/rooms/`, {
+      method: 'POST',
+      body: JSON.stringify(options),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + process.env.YOUR_DAILY_API_KEY,
+      },
+    }).then(r => {
+      console.log('Room Created', r.json());
+      return resolve(r.json());
+    });
+  });
+}

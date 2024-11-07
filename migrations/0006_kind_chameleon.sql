@@ -1,0 +1,1 @@
+ALTER TABLE "rooms" DROP COLUMN IF EXISTS "daily_room_url";
