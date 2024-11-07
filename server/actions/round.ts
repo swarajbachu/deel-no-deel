@@ -5,6 +5,7 @@ import { pairs, players, rooms } from "@/server/db/schema";
 import { PlayerStatus } from "@/types/game";
 import { startGame } from "@/utils/gameLogic";
 import { eq } from "drizzle-orm";
+import { GAME_CONFIG } from "@/config/gameConfig";
 
 export async function getRoom({ roomId }: { roomId: string }) {
   console.log(roomId, "roomId");
@@ -12,7 +13,13 @@ export async function getRoom({ roomId }: { roomId: string }) {
     where: eq(rooms.id, roomId),
     with: {
       players: true,
-      pairs: true,
+      pairs: {
+        with: {
+          caseHolder: true,
+          player1: true,
+          player2: true,
+        },
+      },
     },
   });
   console.log(room, "room");
@@ -33,7 +40,7 @@ export async function joinRoom(roomId: string, playerId: string) {
     return { error: "Room not found" };
   }
 
-  if (room.players.length >= 8) {
+  if (room.players.length >= GAME_CONFIG.PLAYERS_PER_ROOM) {
     return { error: "Room is full" };
   }
 
@@ -44,7 +51,8 @@ export async function joinRoom(roomId: string, playerId: string) {
       playerStatus: PlayerStatus.ACTIVE,
     })
     .where(eq(players.id, playerId));
-  if (room.players.length === 8) {
+
+  if (room.players.length === GAME_CONFIG.PLAYERS_PER_ROOM - 1) {
     startGame(room.id);
   }
 

@@ -53,6 +53,9 @@ export const players = pgTable("players", {
 export const playersSelect = createSelectSchema(players);
 export const playersInsert = createInsertSchema(players);
 
+export type PlayerSelect = z.infer<typeof playersSelect>;
+export type PlayerInsert = z.infer<typeof playersInsert>;
+
 export const playersRelations = relations(players, ({ one }) => ({
   room: one(rooms, {
     fields: [players.roomId],
@@ -111,3 +114,13 @@ export const roomWithPlayerAndPairs = roomsSelect.extend({
 });
 
 export type RoomWithPlayerAndPairs = z.infer<typeof roomWithPlayerAndPairs>;
+
+export const pairsWithPlayerAndCaseHolder = pairsSelect.extend({
+  player1: playersSelect.optional(),
+  player2: playersSelect.optional(),
+  caseHolder: playersSelect.optional(),
+});
+
+export type PairsWithPlayerAndCaseHolder = z.infer<
+  typeof pairsWithPlayerAndCaseHolder
+>;

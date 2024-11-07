@@ -1,18 +1,45 @@
+# Deal or No Deal - Elimination Game
 
-## Setup
+## Game Overview
+A multiplayer elimination game where players compete in pairs with suitcases containing either SAFE or ELIMINATE cards.
 
+### Game Flow
+1. Room Creation & Joining
+   - Players can create or join rooms
+   - Each room requires exactly 8 players to start
+   - Game starts automatically when 8 players join
 
-```bash
-cp .env.example .env
-pnpm i 
-pnpm dev
+2. Round Structure
+   - Players are randomly paired (4 pairs per round)
+   - Each pair plays the suitcase game
+   - Winners advance, losers are eliminated
+   - New rounds start with remaining players
+   - Final round determines the winner
 
-```
+3. Suitcase Game Rules
+   - One player holds a suitcase (randomly assigned)
+   - Suitcase contains either SAFE or ELIMINATE card
+   - Non-holder decides to take or leave the case
+   - Elimination depends on case type and decision:
+     * SAFE case + Take decision = Holder continues
+     * SAFE case + Leave decision = Non-holder continues
+     * ELIMINATE case + Take decision = Holder continues
+     * ELIMINATE case + Leave decision = Non-holder continues
 
-To run as a mini app choose a production app in the dev portal and use NGROK to tunnel. Set the `NEXTAUTH_URL` and the redirect url if using sign in with worldcoin to that ngrok url 
+## Technical Architecture
+- Next.js 13+ with App Router
+- PostgreSQL with Drizzle ORM
+- WebSocket for real-time updates
+- WebRTC for peer-to-peer communication
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup Instructions
+1. Clone repository
+2. Copy environment variables: `cp .env.example .env`
+3. Install dependencies: `pnpm install`
+4. Run migrations: `pnpm db:migrate`
+5. Start development server: `pnpm dev`
 
-View docs: [Docs](https://minikit-docs.vercel.app/mini-apps)
-
-[Developer Portal](https://developer.worldcoin.org/)
+## API Routes
+- `/api/rooms` - Room management
+- `/api/rooms/[roomId]/join` - Join room
+- `/api/rooms/[roomId]/decision` - Handle game decisions

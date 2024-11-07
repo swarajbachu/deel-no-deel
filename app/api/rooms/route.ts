@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Room, GameStatus, PlayerStatus } from "@/types/game";
+import { GameStatus, PlayerStatus } from "@/types/game";
 import { db } from "@/server/db/db";
 import { players, rooms } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/server/auth/config";
 
-const roomsLocal = new Map<string, Room>();
-
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if(!session) {
+  if (!session) {
     return NextResponse.error();
   }
   const [room] = await db
@@ -29,8 +27,4 @@ export async function POST(req: NextRequest) {
     })
     .where(eq(players.id, session?.user.id));
   return NextResponse.json({ roomId: room.id });
-}
-
-export async function GET() {
-  return NextResponse.json(Array.from(roomsLocal.values()));
 }

@@ -11,6 +11,8 @@ import { useSession } from "next-auth/react";
 import { Badge } from "@/components/ui/badge";
 import { useEffect } from "react";
 import { supabaseClient } from "@/lib/supabase-client";
+import ActivePair from "@/components/game/ActivePair";
+import { GAME_CONFIG } from "@/config/gameConfig";
 
 export default function RoomPage() {
   const params = useParams();
@@ -81,7 +83,7 @@ export default function RoomPage() {
   const player = room.players.find((p) => p.id === session.data?.user.id);
 
   if (player?.roomId !== room.id) {
-    if (room.players.length === 8) {
+    if (room.players.length === GAME_CONFIG.PLAYERS_PER_ROOM) {
       return <div>Room is full</div>;
     }
     return (
@@ -107,7 +109,9 @@ export default function RoomPage() {
       </Card>
     );
   }
- 
+
+  const activePair = room.pairs.find((p) => p.pairStatus === "ongoing");
+
   return (
     <div className="container mx-auto max-w-4xl py-8 px-4">
       <h1 className="text-3xl font-bold mb-8">Game Room</h1>
@@ -128,53 +132,24 @@ export default function RoomPage() {
           </CardContent>
         </Card>
 
-        {/* {room.currentPair && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Crown className="h-5 w-5 text-yellow-500" />
-                  Current Pair
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-secondary rounded-lg">
-                    <p className="text-sm text-muted-foreground">Player 1</p>
-                    <p className="font-medium">
-                      {room.currentPair.player1.name}
-                    </p>
-                  </div>
-                  <div className="p-4 bg-secondary rounded-lg">
-                    <p className="text-sm text-muted-foreground">Player 2</p>
-                    <p className="font-medium">
-                      {room.currentPair.player2.name}
-                    </p>
-                  </div>
-                </div>
-
-                {room.currentPair.caseHolder && (
-                  <div className="flex gap-3">
-                    <Button
-                      onClick={() => handleDecision(true)}
-                      className="flex-1"
-                      variant="default"
-                    >
-                      <Check className="mr-2 h-4 w-4" />
-                      Accept
-                    </Button>
-                    <Button
-                      onClick={() => handleDecision(false)}
-                      className="flex-1"
-                      variant="destructive"
-                    >
-                      <X className="mr-2 h-4 w-4" />
-                      Reject
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )} */}
+        {room.roomStatus === "ongoing" &&
+          activePair?.player1 &&
+          activePair?.player2 && (
+            <ActivePair
+              pair={{
+                ...activePair,
+                player1: activePair.player1 || undefined,
+                player2: activePair.player2 || undefined,
+                caseHolder: activePair.caseHolder || undefined,
+              }}
+              onDecision={async (decision) => {
+                await handleDecision(decision);
+                queryClient.invalidateQueries({
+                  queryKey: ["room", params.roomId],
+                });
+              }}
+            />
+          )}
       </div>
     </div>
   );
