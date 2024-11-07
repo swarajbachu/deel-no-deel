@@ -1,3 +1,4 @@
+"use client"
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -6,6 +7,9 @@ import dynamic from "next/dynamic";
 import NextAuthProvider from "@/components/next-auth-provider";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { MiniKit, ResponseEvent } from "@worldcoin/minikit-js";
+import { NONCE } from "@/utils/utils";
+import { useEffect } from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -25,6 +29,7 @@ export default function RootLayout({
       ssr: false,
     }
   );
+  
   return (
     <html lang="en" className="min-h-screen">
         <NextAuthProvider>

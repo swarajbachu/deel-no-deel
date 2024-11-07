@@ -12,6 +12,7 @@ declare module 'next-auth' {
     
       id: string
       name: string
+      walletAddress: string | null
       /**
        * By default, TypeScript merges new interface properties and overwrites existing ones.
        * In this case, the default session user properties will be overwritten,
@@ -73,6 +74,7 @@ export const authOptions: NextAuthOptions = {
           ...session.user,
           id: player.id,
           name: player.name,
+          walletAddress:player.walletAddress
         },
       };
     },

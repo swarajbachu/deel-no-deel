@@ -3,19 +3,18 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import { MiniKit } from "@worldcoin/minikit-js";
+import { MiniKit, ResponseEvent } from "@worldcoin/minikit-js";
 
-import  {signInWithWallet} from "@/utils/utils"
+// import  {signInWithWallet} from "@/utils/utils"
+import { cookies } from "next/headers";
+import { NONCE, signInWithWallet } from "@/utils/utils";
+import { PayButton } from "../Pay";
 
 export const SignIn = () => {
-  const { data: session } = useSession();
-
-  const [isWalletCOnnected, setIsWalletConnected] = useState(!!MiniKit.walletAddress);
-  console.log("isWalletCOnnected",isWalletCOnnected)
-  console.log("MiniKit.walletAddress",MiniKit.walletAddress) 
-  useEffect(() => {
-    setIsWalletConnected(!!MiniKit.walletAddress);
-  }, [MiniKit.walletAddress]);
+  const { data: session,update,status } = useSession();
+  console.log({session})
+  console.log({status})
+  
   return (
     // <Card className="w-full max-w-md">
     //   <CardHeader>
@@ -31,12 +30,16 @@ export const SignIn = () => {
                 {session?.user?.name}
               </span>
             </p>
-            {!isWalletCOnnected && (<Button onClick={async ()=>await signInWithWallet()}>Wallet Connect</Button>)}
+            {(!session.user.walletAddress ) && (<Button onClick={async ()=>{
+              await signInWithWallet()
+              await update()
+              }}>Wallet Connect</Button>)}
             <Button variant="destructive" onClick={() => signOut()}>
               Sign out
             </Button>
+            <PayButton/>
           </>
-        ) : (
+        ) : ( 
           <>
             {/* <p className="text-muted-foreground">Not signed in</p> */}
             <Button  onClick={() => signIn('worldcoin')}>Sign in with Worldcoin</Button>
