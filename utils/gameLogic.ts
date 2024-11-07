@@ -58,13 +58,15 @@ export async function assignCase(pairId: string) {
   const caseHolder = Math.random() < 0.5 ? pair.player1.id : pair.player2.id;
   const caseType = Math.random() < 0.5 ? CaseType.SAFE : CaseType.ELIMINATE;
 
-  await db
+  const finalPair = await db
     .update(pairs)
     .set({
       caseHolderId: caseHolder,
       caseType: caseType,
     })
     .where(eq(pairs.id, pairId));
+
+  console.log("finalPair", finalPair);
 }
 
 export async function processPairResult(pairId: string, decision: boolean) {
