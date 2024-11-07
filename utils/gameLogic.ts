@@ -44,7 +44,7 @@ export async function startGame(roomId: string) {
   }
 
   const pairsPushed = await db.insert(pairs).values(pairsToInsert).returning();
-  
+
   const firstPair = pairsPushed[0];
   if (!firstPair.id) throw new Error("No pairs found");
   await assignCase(firstPair.id);
@@ -75,7 +75,7 @@ export async function assignCase(pairId: string) {
   console.log("finalPair", finalPair);
 }
 
-export async function processPairResult(pairId: string, decision: boolean) {
+export async function processPairResult(pairId: string, takeCase: boolean) {
   const pair = await db.query.pairs.findFirst({
     where: eq(pairs.id, pairId),
     with: {
@@ -93,31 +93,26 @@ export async function processPairResult(pairId: string, decision: boolean) {
 
   // Determine winner based on case type and decision
   let winnerId: string;
-  
+
   if (pair.caseType === CaseType.SAFE) {
     // For SAFE case:
     // If non-holder takes the case (decision=true) and it's safe, non-holder wins
     // If non-holder leaves the case (decision=false) and it's safe, case-holder wins
-    winnerId = decision ? nonCaseHolder.id : pair.caseHolder.id;
+    winnerId = takeCase ? nonCaseHolder.id : pair.caseHolder.id;
   } else {
     // For ELIMINATE case:
     // If non-holder takes the case (decision=true) and it's eliminate, case-holder wins
     // If non-holder leaves the case (decision=false) and it's eliminate, non-holder wins
-    winnerId = decision ? pair.caseHolder.id : nonCaseHolder.id;
+    winnerId = takeCase ? pair.caseHolder.id : nonCaseHolder.id;
   }
 
   // Update eliminated player status
-  const eliminatedId = winnerId === pair.player1.id ? pair.player2.id : pair.player1.id;
+  const eliminatedId =
+    winnerId === pair.player1.id ? pair.player2.id : pair.player1.id;
   await db
     .update(players)
     .set({ playerStatus: PlayerStatus.IDLE })
     .where(eq(players.id, eliminatedId));
-
-  // Update winner status
-  await db
-    .update(players)
-    .set({ playerStatus: PlayerStatus.ACTIVE })
-    .where(eq(players.id, winnerId));
 
   // Mark pair as completed
   await db
@@ -131,10 +126,10 @@ export async function processPairResult(pairId: string, decision: boolean) {
 
   // Check if round is complete
   if (!pair.roomId) throw new Error("Invalid pair state");
-  await checkAndStartNextRound(pair.roomId);
+  await checkAndStartNextPairOrRound(pair.roomId);
 }
 
-async function checkAndStartNextRound(roomId: string) {
+async function checkAndStartNextPairOrRound(roomId: string) {
   const room = await db.query.rooms.findFirst({
     where: eq(rooms.id, roomId),
     with: {
@@ -145,14 +140,18 @@ async function checkAndStartNextRound(roomId: string) {
 
   if (!room) return;
 
-  const currentRoundPairs = room.pairs.filter(p => p.roundId === room.currentRound);
-  const uncompletedPairs = currentRoundPairs.filter(p => !p.completed);
+  const currentRoundPairs = room.pairs.filter(
+    (p) => p.roundId === room.currentRound
+  );
+  const uncompletedPairs = currentRoundPairs.filter(
+    (p) => p.pairStatus !== "ended"
+  );
 
   if (uncompletedPairs.length === 0) {
     // All pairs in current round are complete
     const winners = currentRoundPairs
-      .filter(p => p.completed && p.winnerId)
-      .map(p => p.winnerId);
+      .filter((p) => p.pairStatus === "ended" && p.winnerId)
+      .map((p) => p.winnerId as string) // Ensure winnerId is treated as string
 
     if (winners.length >= 2) {
       // Start next round
@@ -169,7 +168,7 @@ async function checkAndStartNextRound(roomId: string) {
 
       await db
         .update(rooms)
-        .set({ 
+        .set({
           roomStatus: GameStatus.ENDED,
           winnerId: winnerId,
         })
@@ -183,13 +182,14 @@ async function checkAndStartNextRound(roomId: string) {
     }
   } else {
     // Start the next pending pair if any
-    const nextPendingPair = currentRoundPairs.find(p => p.pairStatus === "pending");
+    const nextPendingPair = currentRoundPairs.find(
+      (p) => p.pairStatus === "pending"
+    );
     if (nextPendingPair) {
       await db
         .update(pairs)
         .set({ pairStatus: "ongoing" })
         .where(eq(pairs.id, nextPendingPair.id));
-      
       await assignCase(nextPendingPair.id);
     }
   }
@@ -264,8 +264,11 @@ async function startNextRound(roomId: string, winners: string[]) {
 
   // If we have pairs to create
   if (pairsToInsert.length > 0) {
-    const pairsPushed = await db.insert(pairs).values(pairsToInsert).returning();
-    
+    const pairsPushed = await db
+      .insert(pairs)
+      .values(pairsToInsert)
+      .returning();
+
     // Assign case for the first pair
     const firstPair = pairsPushed[0];
     if (!firstPair.id) throw new Error("No pairs created");

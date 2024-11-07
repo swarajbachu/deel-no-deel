@@ -79,17 +79,7 @@ export default function RoomPage() {
     },
   });
 
-  const handleDecision = async (decision: boolean) => {
-    const currentPair = room?.pairs.find((p) => p.pairStatus === "ongoing");
-    if (!currentPair) return;
-    const response = await fetch(`/api/rooms/${params.roomId}/decision`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ decision }),
-    });
-    const updatedRoom = await response.json();
-    queryClient.invalidateQueries({ queryKey: ["room", params.roomId] });
-  };
+
 
   if (!session.data?.user.id) {
     return <div>Please login to join the game</div>;
@@ -179,12 +169,7 @@ export default function RoomPage() {
                 player2: activePair.player2 || undefined,
                 caseHolder: activePair.caseHolder || undefined,
               }}
-              onDecision={async (decision) => {
-                await handleDecision(decision);
-                queryClient.invalidateQueries({
-                  queryKey: ["room", params.roomId],
-                });
-              }}
+             
             />
           )}
 
