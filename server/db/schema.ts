@@ -53,6 +53,7 @@ export const players = pgTable("players", {
   name: text("name").notNull(),
   playerStatus: playersStatusEnum().notNull().default("idle"),
   createdAt: timestamp("created_at").defaultNow(),
+  walletAddress: text("wallet_address"),
 });
 
 export const playersSelect = createSelectSchema(players);
