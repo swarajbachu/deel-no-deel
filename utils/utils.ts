@@ -29,5 +29,6 @@ export const signInWithWallet = async () => {
 				nonce,
 			}),
 		})
+        console.log("response",response)
 	}
 }

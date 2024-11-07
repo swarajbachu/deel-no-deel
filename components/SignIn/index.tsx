@@ -11,7 +11,8 @@ export const SignIn = () => {
   const { data: session } = useSession();
 
   const [isWalletCOnnected, setIsWalletConnected] = useState(!!MiniKit.walletAddress);
-
+  console.log("isWalletCOnnected",isWalletCOnnected)
+  console.log("MiniKit.walletAddress",MiniKit.walletAddress) 
   useEffect(() => {
     setIsWalletConnected(!!MiniKit.walletAddress);
   }, [MiniKit.walletAddress]);
