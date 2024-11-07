@@ -15,6 +15,20 @@
       "when": 1730930977915,
       "tag": "0001_flaky_the_spike",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1730971558044,
+      "tag": "0002_warm_kronos",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1730972155692,
+      "tag": "0003_gray_darkhawk",
+      "breakpoints": true
     }
   ]
 }

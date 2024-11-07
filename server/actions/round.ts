@@ -12,6 +12,7 @@ export async function getRoom({ roomId }: { roomId: string }) {
   const room = await db.query.rooms.findFirst({
     where: eq(rooms.id, roomId),
     with: {
+      winner: true,
       players: true,
       pairs: {
         with: {

@@ -7,21 +7,27 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { CaseType } from '@/types/game'
 import { PlayerSelect } from '@/server/db/schema'
+import { useSession } from 'next-auth/react'
 
 const TIMER_DURATION = 30
 
 interface DealOrNoDealProps {
   onDecision: (decision: boolean) => void
   caseHolder?: PlayerSelect
-  caseType?: CaseType
+  caseType: CaseType
 }
 
-export default function DealOrNoDeal({ onDecision, caseHolder, caseType }: DealOrNoDealProps) {
-  const [selectedCase, setSelectedCase] = useState<number>(Math.floor(Math.random() * 2) + 1)
-  const [isCaseOpened, setIsCaseOpened] = useState(false)
-  const [isSafe, setIsSafe] = useState(Math.random() < 0.5)
+export default function DealOrNoDeal({ 
+  onDecision, 
+  caseHolder,
+  caseType 
+}: DealOrNoDealProps) {
+  const session = useSession();
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION)
+  const [isCaseOpened, setIsCaseOpened] = useState(false)
   const [gameState, setGameState] = useState<'waiting' | 'opened' | 'decided'>('waiting')
+  
+  const isCaseHolder = caseHolder?.id === session.data?.user.id;
 
   useEffect(() => {
     if (timeLeft > 0 && gameState === 'waiting') {
@@ -30,27 +36,10 @@ export default function DealOrNoDeal({ onDecision, caseHolder, caseType }: DealO
     }
   }, [timeLeft, gameState])
 
-  const handleOpenCase = () => {
+  const handleNonHolderDecision = (takingCase: boolean) => {
     setIsCaseOpened(true)
-    setGameState('opened')
-  }
-
-  const handleKeepCase = () => {
     setGameState('decided')
-    onDecision(true)
-  }
-
-  const handleGiveCase = () => {
-    setGameState('decided')
-    onDecision(false)
-  }
-
-  const handleTakeCase = () => {
-    setGameState('decided')
-  }
-
-  const handleLeaveCase = () => {
-    setGameState('decided')
+    onDecision(takingCase)
   }
 
   return (
@@ -61,10 +50,10 @@ export default function DealOrNoDeal({ onDecision, caseHolder, caseType }: DealO
         <p className="text-center mt-2">{timeLeft} seconds left</p>
       </div>
 
-      {/* User 1 Avatar */}
+      {/* User Avatars */}
       <div className="flex justify-center mb-4">
         <motion.div
-          className={`bg-blue-500 rounded-full p-2 ${selectedCase === 1 ? 'ring-2 ring-yellow-400' : ''}`}
+          className="bg-blue-500 rounded-full p-2"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
@@ -123,45 +112,48 @@ export default function DealOrNoDeal({ onDecision, caseHolder, caseType }: DealO
                 transition={{ delay: 0.3 }}
                 style={{ transform: 'translateZ(10px) rotateX(-15deg)' }}
               >
-                <div className={`p-4 ${isSafe ? 'bg-green-500' : 'bg-red-500'} rounded-lg shadow-inner`}>
-                  <p className="text-3xl font-bold text-white">{isSafe ? 'SAFE' : 'UNSAFE'}</p>
-                </div>
+                {isCaseHolder && (
+                  <div className={`p-4 ${caseType === CaseType.SAFE ? 'bg-green-500' : 'bg-red-500'} rounded-lg shadow-inner`}>
+                    <p className="text-3xl font-bold text-white">{caseType}</p>
+                  </div>
+                )}
               </motion.div>
             </motion.div>
           </motion.div>
-          
-          {/* Clickable area */}
-          {!isCaseOpened && (
-            <div
-              className="absolute inset-0 cursor-pointer"
-              onClick={handleOpenCase}
-            ></div>
-          )}
         </div>
 
-        {gameState === 'opened' && selectedCase === 1 && (
-          <div className="mt-4 space-x-4">
-            <Button onClick={handleKeepCase}>Keep</Button>
-            <Button onClick={handleGiveCase}>Give</Button>
+        {/* Game Controls */}
+        {isCaseHolder ? (
+          <div className="mt-4 text-center">
+            <h2 className="text-xl font-bold mb-2">You are the Case Holder</h2>
+            <p className="text-sm text-gray-600">Wait for other player's decision...</p>
           </div>
-        )}
-
-        {gameState === 'opened' && selectedCase === 2 && (
+        ) : (
           <div className="mt-4 space-x-4">
-            <Button onClick={handleTakeCase}>Take</Button>
-            <Button onClick={handleLeaveCase}>Leave</Button>
+            <Button 
+              onClick={() => handleNonHolderDecision(true)}
+              disabled={gameState === 'decided'}
+            >
+              Take Case
+            </Button>
+            <Button 
+              onClick={() => handleNonHolderDecision(false)}
+              disabled={gameState === 'decided'}
+            >
+              Leave Case
+            </Button>
           </div>
         )}
 
         {gameState === 'decided' && (
-          <p className="mt-4 text-xl font-bold">Game Over!</p>
+          <p className="mt-4 text-xl font-bold">Decision Made!</p>
         )}
       </div>
 
-      {/* User 2 Avatar */}
+      {/* Second User Avatar */}
       <div className="flex justify-center mt-4">
         <motion.div
-          className={`bg-purple-500 rounded-full p-2 ${selectedCase === 2 ? 'ring-2 ring-yellow-400' : ''}`}
+          className="bg-purple-500 rounded-full p-2"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >

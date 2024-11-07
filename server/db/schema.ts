@@ -24,15 +24,20 @@ export const rooms = pgTable("rooms", {
     .primaryKey(),
   roomStatus: roomStatusEnum().notNull().default("pending"),
   currentRound: integer("current_round").notNull().default(0),
+  winnerId: text("winner_id"),
   entryPrice: integer("entry_price").notNull().default(0),
   humanTouch: boolean("human_touch").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const roomsRelations = relations(rooms, ({ many }) => ({
+export const roomsRelations = relations(rooms, ({ many, one }) => ({
   players: many(players),
   pairs: many(pairs),
+  winner: one(players, {
+    fields: [rooms.winnerId],
+    references: [players.id],
+  }),
 }));
 
 export const roomsSelect = createSelectSchema(rooms).extend({
@@ -81,6 +86,8 @@ export const pairs = pgTable("pairs", {
   completed: boolean("completed").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  roundId: integer("round_id").notNull().default(1),
+  winnerId: text("winner_id").references(() => players.id),
 });
 
 export const pairsSelect = createSelectSchema(pairs);

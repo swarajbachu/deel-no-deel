@@ -1,0 +1,1 @@
+ALTER TABLE "rooms" ADD COLUMN "winner_id" text;

@@ -1,4 +1,3 @@
-import { Room } from "@/types/game";
 
 type PeerConnection = {
   connection: RTCPeerConnection;
@@ -8,7 +7,7 @@ type PeerConnection = {
 export class WebRTCService {
   private peerConnections: Map<string, PeerConnection> = new Map();
   private localId: string;
-  private room?: Room;
+  // private room?: Room;
 
   constructor(localId: string) {
     this.localId = localId;

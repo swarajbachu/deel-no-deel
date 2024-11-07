@@ -1,7 +1,7 @@
 import { db } from "@/server/db/db";
 import { PairInsert, pairs, players, rooms } from "@/server/db/schema";
 import { CaseType, GameStatus, PlayerStatus } from "@/types/game";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { GAME_CONFIG } from "@/config/gameConfig";
 
 export async function startGame(roomId: string) {
@@ -36,9 +36,9 @@ export async function startGame(roomId: string) {
     });
   }
 
-  await db.insert(pairs).values(pairsToInsert);
+  const pairsPushed = await db.insert(pairs).values(pairsToInsert).returning();
 
-  const firstPair = pairsToInsert[0];
+  const firstPair = pairsPushed[0];
   if (!firstPair.id) throw new Error("No pairs found");
   await assignCase(firstPair.id);
 }
@@ -85,23 +85,97 @@ export async function processPairResult(pairId: string, decision: boolean) {
   const nonCaseHolder =
     pair.player1.id === pair.caseHolder.id ? pair.player2 : pair.player1;
 
-  const eliminatedPlayerId =
-    pair.caseType === CaseType.SAFE
-      ? decision
-        ? nonCaseHolder.id
-        : pair.caseHolder.id
-      : decision
-      ? nonCaseHolder.id
-      : pair.caseHolder.id;
+  // Determine winner based on case type and decision
+  let winnerId: string;
+  
+  if (pair.caseType === CaseType.SAFE) {
+    // For SAFE case:
+    // If non-holder takes the case (decision=true) and it's safe, non-holder wins
+    // If non-holder leaves the case (decision=false) and it's safe, case-holder wins
+    winnerId = decision ? nonCaseHolder.id : pair.caseHolder.id;
+  } else {
+    // For ELIMINATE case:
+    // If non-holder takes the case (decision=true) and it's eliminate, case-holder wins
+    // If non-holder leaves the case (decision=false) and it's eliminate, non-holder wins
+    winnerId = decision ? pair.caseHolder.id : nonCaseHolder.id;
+  }
 
-  // Update player status
+  // Update eliminated player status
+  const eliminatedId = winnerId === pair.player1.id ? pair.player2.id : pair.player1.id;
   await db
     .update(players)
     .set({ playerStatus: PlayerStatus.IDLE })
-    .where(eq(players.id, eliminatedPlayerId));
+    .where(eq(players.id, eliminatedId));
+
+  // Update winner status
+  await db
+    .update(players)
+    .set({ playerStatus: PlayerStatus.ACTIVE })
+    .where(eq(players.id, winnerId));
 
   // Mark pair as completed
-  await db.update(pairs).set({ completed: true }).where(eq(pairs.id, pairId));
+  await db
+    .update(pairs)
+    .set({
+      completed: true,
+      winnerId: winnerId,
+      pairStatus: "ended",
+    })
+    .where(eq(pairs.id, pairId));
+
+  // Check if round is complete
+  if (!pair.roomId) throw new Error("Invalid pair state");
+  await checkAndStartNextRound(pair.roomId);
+}
+
+async function checkAndStartNextRound(roomId: string) {
+  const room = await db.query.rooms.findFirst({
+    where: eq(rooms.id, roomId),
+    with: {
+      pairs: true,
+      players: true,
+    },
+  });
+
+  if (!room) return;
+
+  const activePairs = room.pairs.filter((p) => !p.completed);
+  if (activePairs.length === 0) {
+    // Get winners from previous round
+    const winners = room.pairs
+      .filter((p) => p.completed && p.winnerId)
+      .map((p) => p.winnerId);
+
+    if (winners.length >= 2) {
+      // Create new pairs for next round
+      await startNextRound(roomId, winners as string[]);
+    } else if (winners.length === 1) {
+      // We have a final winner
+      const winnerId = winners[0];
+      if (!winnerId) throw new Error("Invalid winner state");
+
+      // Update room with winner and end the game
+      await db
+        .update(rooms)
+        .set({ 
+          roomStatus: "ended",
+          winnerId: winnerId,
+        })
+        .where(eq(rooms.id, roomId));
+
+      // Update all players to idle except winner
+      await db
+        .update(players)
+        .set({ playerStatus: "idle" })
+        .where(eq(players.roomId, roomId));
+
+      // Update winner's status
+      await db
+        .update(players)
+        .set({ playerStatus: "active" })
+        .where(eq(players.id, winnerId));
+    }
+  }
 }
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -143,3 +217,47 @@ function shuffleArray<T>(array: T[]): T[] {
 
 //   return room;
 // }
+
+async function startNextRound(roomId: string, winners: string[]) {
+  // Increment the round number
+  await db
+    .update(rooms)
+    .set({
+      currentRound: sql`${rooms.currentRound} + 1`,
+    })
+    .where(eq(rooms.id, roomId));
+
+  // Create new pairs from winners
+  const shuffledWinners = shuffleArray([...winners]);
+  const pairsToInsert: PairInsert[] = [];
+
+  for (let i = 0; i < shuffledWinners.length; i += 2) {
+    // If we have an odd number of winners, the last player automatically advances
+    if (i + 1 >= shuffledWinners.length) break;
+
+    pairsToInsert.push({
+      roomId: roomId,
+      player1Id: shuffledWinners[i],
+      player2Id: shuffledWinners[i + 1],
+      completed: false,
+      caseType: CaseType.SAFE, // Will be randomly assigned later
+      pairStatus: i === 0 ? "ongoing" : "pending",
+    });
+  }
+
+  // If we have pairs to create
+  if (pairsToInsert.length > 0) {
+    const pairsPushed = await db.insert(pairs).values(pairsToInsert).returning();
+    
+    // Assign case for the first pair
+    const firstPair = pairsPushed[0];
+    if (!firstPair.id) throw new Error("No pairs created");
+    await assignCase(firstPair.id);
+  } else {
+    // If we have only one winner, end the game
+    await db
+      .update(rooms)
+      .set({ roomStatus: GameStatus.ENDED })
+      .where(eq(rooms.id, roomId));
+  }
+}

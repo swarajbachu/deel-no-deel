@@ -122,13 +122,28 @@ export default function RoomPage() {
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-sm text-muted-foreground">Round</p>
-                <p className="text-2xl font-semibold">{room.currentRound}</p>
+                <p className="text-2xl font-semibold">
+                  {room.currentRound}/{GAME_CONFIG.ROUNDS_MAP[room.players.length as keyof typeof GAME_CONFIG.ROUNDS_MAP] || 'N/A'}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Players</p>
+                <p className="text-2xl font-semibold">{room.players.length}/{GAME_CONFIG.PLAYERS_PER_ROOM}</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Status</p>
                 <Badge>{room.roomStatus}</Badge>
               </div>
             </div>
+            {room.roomStatus === "ended" && room.winner && (
+              <div className="mt-4 text-center">
+                <p className="text-sm text-muted-foreground">Winner</p>
+                <div className="flex items-center justify-center gap-2">
+                  <Crown className="h-5 w-5 text-yellow-500" />
+                  <p className="text-xl font-semibold">{room.winner.name}</p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
