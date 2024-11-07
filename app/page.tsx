@@ -1,4 +1,3 @@
-import { PayBlock } from "@/components/Pay";
 import { SignIn } from "@/components/SignIn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +10,9 @@ export default function Home() {
     <main className="flex flex-col min-h-screen bg-gradient-to-b from-background to-muted">
       
         {/* Hero Section */}
+
         <section className="w-full py-12 md:py-24 lg:py-32 overflow-hidden relative">
+       
           {/* SVG Definitions */}
           <svg className="hidden">
             <defs>

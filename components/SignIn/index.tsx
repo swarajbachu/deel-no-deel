@@ -8,6 +8,7 @@ import { MiniKit, ResponseEvent } from "@worldcoin/minikit-js";
 // import  {signInWithWallet} from "@/utils/utils"
 import { cookies } from "next/headers";
 import { NONCE, signInWithWallet } from "@/utils/utils";
+import { PayButton } from "../Pay";
 
 export const SignIn = () => {
   const { data: session,update,status } = useSession();
@@ -36,6 +37,7 @@ export const SignIn = () => {
             <Button variant="destructive" onClick={() => signOut()}>
               Sign out
             </Button>
+            <PayButton/>
           </>
         ) : ( 
           <>

@@ -24,32 +24,7 @@ export default function RootLayout({
       ssr: false,
     }
   );
-  useEffect(() => {
-    if (!MiniKit.isInstalled()) {
-      return
-    }
   
-    MiniKit.subscribe(ResponseEvent.MiniAppWalletAuth, async payload => {
-      if (payload.status === 'error') {
-        return
-      } else {
-        const response = await fetch('/api/complete-siwe', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            payload: payload,
-            nonce:NONCE,
-          }),
-        })
-      }
-    })
-  
-    return () => {
-      MiniKit.unsubscribe(ResponseEvent.MiniAppWalletAuth)
-    }
-  }, [])
   return (
     <html lang="en">
         <NextAuthProvider>

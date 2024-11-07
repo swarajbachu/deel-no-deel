@@ -8,6 +8,7 @@ interface IRequestPayload {
 
 export async function POST(req: NextRequest) {
   const { payload } = (await req.json()) as IRequestPayload;
+  
 
   // IMPORTANT: Here we should fetch the reference you created in /initiate-payment to ensure the transaction we are verifying is the same one we initiated
   //   const reference = getReferenceFromDB();

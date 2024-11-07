@@ -2,12 +2,38 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { SignIn } from "../SignIn";
+import { MiniKit, ResponseEvent } from "@worldcoin/minikit-js";
+import { NONCE } from "@/utils/utils";
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    useEffect(() => {
+  
+  
+      MiniKit.subscribe(ResponseEvent.MiniAppWalletAuth, async payload => {
+        if (payload.status === 'error') {
+          return
+        } else {
+          const response = await fetch('/api/complete-siwe', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              payload: payload,
+              nonce:NONCE,
+            }),
+          })
+        }
+      })
+    
+      return () => {
+        MiniKit.unsubscribe(ResponseEvent.MiniAppWalletAuth)
+      }
+    }, [])
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
     <div className=" flex h-14 items-center">
