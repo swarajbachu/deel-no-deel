@@ -30,7 +30,9 @@ export const POST = async (req: NextRequest) => {
         
         await db.update(players).set({
             walletAddress: payload.address,
-        }).where(eq(players.id, session?.user.id));
+        }).where(eq(players.id, session?.user.id)).returning();
+	
+		
 		return NextResponse.json({
 			status: 'success',
 			isValid: validMessage.isValid,

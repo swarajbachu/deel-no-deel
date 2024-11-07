@@ -42,7 +42,7 @@ export const SignIn = () => {
         ) : ( 
           <>
             {/* <p className="text-muted-foreground">Not signed in</p> */}
-            <Button  onClick={() => signIn()}>Sign in with Worldcoin</Button>
+            <Button  onClick={() => signIn('worldcoin')}>Sign in with Worldcoin</Button>
           </>
         )}
         </>

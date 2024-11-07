@@ -5,6 +5,7 @@ import { VerifyBlock } from "@/components/Verify";
 import { Menu, X, ChevronRight, Briefcase, Shield, Coins, Users } from "lucide-react"
 import Image from "next/image";
 
+
 export default function Home() {
   return (
     <main className="flex flex-col min-h-screen bg-gradient-to-b from-background to-muted">
@@ -56,7 +57,7 @@ export default function Home() {
             <div className="flex flex-col items-center justify-center text-center max-w-3xl mx-auto">
               <div className="space-y-4">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500">
-                  Deal No Deel: The Ultimate Blockchain Game
+                  Deel No Deel: The Ultimate Immersive Game
                 </h1>
                 <p className="text-muted-foreground md:text-xl">
                   Join the excitement on Worldchain. Open briefcases, make deals, and win big with your World ID!
@@ -81,7 +82,7 @@ export default function Home() {
               {[
                 { icon: Shield, title: "Connect with World ID", description: "Verify your identity using World ID to join the game securely." },
                 { icon: Briefcase, title: "Choose Your Briefcase", description: "Select one of the 26 briefcases, each containing a hidden amount." },
-                { icon: Coins, title: "Deal or No Deal?", description: "Open cases, receive offers, and decide whether to make a deal or keep playing." }
+                { icon: Coins, title: "Deel No Deel?", description: "Open cases, receive offers, and decide whether to make a deal or keep playing." }
               ].map((step, index) => (
                 <div key={index} className="flex flex-col items-center text-center space-y-4 p-6 bg-background rounded-lg shadow-lg transition-transform hover:scale-105">
                   <div className="p-4 bg-primary text-primary-foreground rounded-full">
@@ -101,7 +102,7 @@ export default function Home() {
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">Game Features</h2>
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
               {[
-                { icon: Briefcase, title: "Blockchain-Powered", description: "Experience true ownership and transparency with Worldchain technology." },
+                { icon: Briefcase, title: "Ownership", description: "Experience true ownership and transparency with Worldchain technology." },
                 { icon: Shield, title: "Secure Identity", description: "Play with confidence using World ID verification for enhanced security." },
                 { icon: Coins, title: "Real Crypto Prizes", description: "Win and withdraw real cryptocurrency directly to your wallet." },
                 { icon: Users, title: "Global Community", description: "Connect with players worldwide and compete for the top spot on our leaderboard." }
@@ -121,7 +122,7 @@ export default function Home() {
           <div className="px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Ready to Make a Deal?</h2>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Ready to Make a Deel?</h2>
               </div>
             
             </div>
@@ -130,7 +131,7 @@ export default function Home() {
             <div className="relative w-full h-[300px] sm:h-[400px] overflow-hidden rounded-lg">
               <div className="absolute inset-0 bg-gradient-to-r from-primary to-purple-500 opacity-75" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-4xl sm:text-6xl font-bold text-white animate-float">Deal or No Deal</div>
+                <div className="text-4xl sm:text-6xl font-bold text-white animate-float">Deel No Deel</div>
               </div>
               {[...Array(20)].map((_, i) => (
                 <div
