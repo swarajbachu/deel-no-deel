@@ -26,7 +26,7 @@ export default function RootLayout({
     }
   );
   return (
-    <html lang="en">
+    <html lang="en" className="min-h-screen">
         <NextAuthProvider>
           <ErudaProvider>
             <MiniKitProvider>

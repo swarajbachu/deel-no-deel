@@ -6,6 +6,7 @@ import { VerifyBlock } from "@/components/Verify";
 import { Menu, X, ChevronRight, Briefcase, Shield, Coins, Users } from "lucide-react"
 import Image from "next/image";
 
+
 export default function Home() {
   return (
     <main className="flex flex-col min-h-screen bg-gradient-to-b from-background to-muted">
