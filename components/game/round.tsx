@@ -33,13 +33,25 @@ export default function DealOrNoDeal({
     if (timeLeft > 0 && gameState === 'waiting') {
       const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000)
       return () => clearTimeout(timerId)
+    } else if (timeLeft === 0 && gameState === 'waiting') {
+      // When time runs out, case automatically goes to case holder
+      setIsCaseOpened(true)
+      setGameState('decided')
+      onDecision(false) // false means the other player is not taking the case
     }
-  }, [timeLeft, gameState])
+  }, [timeLeft, gameState, onDecision])
 
   const handleNonHolderDecision = (takingCase: boolean) => {
     setIsCaseOpened(true)
     setGameState('decided')
     onDecision(takingCase)
+  }
+
+  // Add click handler for case holder
+  const handleCaseHolderOpen = () => {
+    if (isCaseHolder && gameState === 'waiting') {
+      setIsCaseOpened(true)
+    }
   }
 
   return (
@@ -160,6 +172,14 @@ export default function DealOrNoDeal({
           <User className="w-8 h-8 text-white" />
         </motion.div>
       </div>
+
+      {/* Update the suitcase click area */}
+      {!isCaseOpened && isCaseHolder && (
+        <div
+          className="absolute inset-0 cursor-pointer"
+          onClick={handleCaseHolderOpen}
+        ></div>
+      )}
     </div>
   )
 }

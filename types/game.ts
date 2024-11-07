@@ -16,4 +16,16 @@ export enum PlayerStatus {
 export enum CaseType {
   SAFE = 'SAFE',
   ELIMINATE = 'ELIMINATE'
+}
+
+// Add these new types
+export type PlayerCount = 2 | 4 | 8;
+
+export type RoundsMap = {
+  [key in PlayerCount]: number;
+};
+
+export interface GameConfig {
+  PLAYERS_PER_ROOM: PlayerCount;
+  ROUNDS_MAP: RoundsMap;
 } 

@@ -13,12 +13,14 @@ import { useEffect } from "react";
 import { supabaseClient } from "@/lib/supabase-client";
 import ActivePair from "@/components/game/ActivePair";
 import { GAME_CONFIG } from "@/config/gameConfig";
+import GameProgress from "@/components/game/GameProgress";
+import { PairsWithPlayerAndCaseHolder } from "@/server/db/schema";
 
 export default function RoomPage() {
   const params = useParams();
   const session = useSession();
   const queryClient = useQueryClient();
-  const { data: room,isPending } = useQuery({
+  const { data: room, isPending } = useQuery({
     queryKey: ["room", params.roomId],
     queryFn: () => getRoom({ roomId: params.roomId as string }),
   });
@@ -53,32 +55,37 @@ export default function RoomPage() {
   };
   console.log(session.data?.user, "session.data.user");
 
-
-   
-  useEffect(()=>{
-    const channel = supabaseClient.channel(`join_room:${params.roomId}`).on('postgres_changes',{
-      event:"UPDATE",
-      schema: 'public',
-      table: 'rooms',
-      filter: 'id=eq.'+params.roomId,
-    },async (payload)=>{
-      console.log(payload);
-      await queryClient.invalidateQueries({ queryKey: ["room", params.roomId] });
-    }).subscribe()
-    return ()=> {
-      supabaseClient.removeChannel(channel)
-    }
-  },[supabaseClient,params.roomId,queryClient])
+  useEffect(() => {
+    const channel = supabaseClient
+      .channel(`join_room:${params.roomId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "rooms",
+          filter: "id=eq." + params.roomId,
+        },
+        async (payload) => {
+          console.log(payload);
+          await queryClient.invalidateQueries({
+            queryKey: ["room", params.roomId],
+          });
+        }
+      )
+      .subscribe();
+    return () => {
+      supabaseClient.removeChannel(channel);
+    };
+  }, [supabaseClient, params.roomId, queryClient]);
 
   if (!session.data?.user.id) {
-    return <div>Please login to join the game</div>;
+    return <div>Please login to join the game</div>
   }
   if (isPending) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
   if (!room) return notFound();
-
- 
 
   const player = room.players.find((p) => p.id === session.data?.user.id);
 
@@ -123,12 +130,15 @@ export default function RoomPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Round</p>
                 <p className="text-2xl font-semibold">
-                  {room.currentRound}/{GAME_CONFIG.ROUNDS_MAP[room.players.length as keyof typeof GAME_CONFIG.ROUNDS_MAP] || 'N/A'}
+                  {room.currentRound}/
+                  {GAME_CONFIG.ROUNDS_MAP[GAME_CONFIG.PLAYERS_PER_ROOM]}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Players</p>
-                <p className="text-2xl font-semibold">{room.players.length}/{GAME_CONFIG.PLAYERS_PER_ROOM}</p>
+                <p className="text-2xl font-semibold">
+                  {room.players.length}/{GAME_CONFIG.PLAYERS_PER_ROOM}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Status</p>
@@ -165,6 +175,14 @@ export default function RoomPage() {
               }}
             />
           )}
+
+        {room.roomStatus === "ongoing" && (
+          <GameProgress
+            currentRound={room.currentRound}
+            totalRounds={GAME_CONFIG.ROUNDS_MAP[GAME_CONFIG.PLAYERS_PER_ROOM]}
+            pairs={room.pairs as PairsWithPlayerAndCaseHolder[]}
+          />
+        )}
       </div>
     </div>
   );

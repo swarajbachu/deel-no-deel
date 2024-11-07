@@ -14,6 +14,11 @@ export async function startGame(roomId: string) {
 
   if (!room) throw new Error("Room not found");
 
+  // Validate player count matches config
+  if (room.players.length !== GAME_CONFIG.PLAYERS_PER_ROOM) {
+    throw new Error("Invalid player count");
+  }
+
   await db
     .update(rooms)
     .set({
@@ -24,6 +29,7 @@ export async function startGame(roomId: string) {
 
   const shuffledPlayers = shuffleArray([...room.players]);
   const pairsToInsert: PairInsert[] = [];
+  const pairsPerRound = GAME_CONFIG.PLAYERS_PER_ROOM / 2;
 
   for (let i = 0; i < shuffledPlayers.length; i += 2) {
     pairsToInsert.push({
@@ -31,18 +37,18 @@ export async function startGame(roomId: string) {
       player1Id: shuffledPlayers[i].id,
       player2Id: shuffledPlayers[i + 1].id,
       completed: false,
-      caseType: CaseType.SAFE,
+      roundId: 1,
+      caseType: Math.random() < 0.5 ? CaseType.SAFE : CaseType.ELIMINATE,
       pairStatus: i === 0 ? "ongoing" : "pending",
     });
   }
 
   const pairsPushed = await db.insert(pairs).values(pairsToInsert).returning();
-
+  
   const firstPair = pairsPushed[0];
   if (!firstPair.id) throw new Error("No pairs found");
   await assignCase(firstPair.id);
 }
-
 export async function assignCase(pairId: string) {
   const pair = await db.query.pairs.findFirst({
     where: eq(pairs.id, pairId),
@@ -139,41 +145,52 @@ async function checkAndStartNextRound(roomId: string) {
 
   if (!room) return;
 
-  const activePairs = room.pairs.filter((p) => !p.completed);
-  if (activePairs.length === 0) {
-    // Get winners from previous round
-    const winners = room.pairs
-      .filter((p) => p.completed && p.winnerId)
-      .map((p) => p.winnerId);
+  const currentRoundPairs = room.pairs.filter(p => p.roundId === room.currentRound);
+  const uncompletedPairs = currentRoundPairs.filter(p => !p.completed);
+
+  if (uncompletedPairs.length === 0) {
+    // All pairs in current round are complete
+    const winners = currentRoundPairs
+      .filter(p => p.completed && p.winnerId)
+      .map(p => p.winnerId);
 
     if (winners.length >= 2) {
-      // Create new pairs for next round
-      await startNextRound(roomId, winners as string[]);
+      // Start next round
+      const nextRound = room.currentRound + 1;
+      const totalRounds = GAME_CONFIG.ROUNDS_MAP[GAME_CONFIG.PLAYERS_PER_ROOM];
+
+      if (nextRound <= totalRounds) {
+        await startNextRound(roomId, winners as string[]);
+      }
     } else if (winners.length === 1) {
-      // We have a final winner
+      // Game is complete, we have a winner
       const winnerId = winners[0];
       if (!winnerId) throw new Error("Invalid winner state");
 
-      // Update room with winner and end the game
       await db
         .update(rooms)
         .set({ 
-          roomStatus: "ended",
+          roomStatus: GameStatus.ENDED,
           winnerId: winnerId,
         })
         .where(eq(rooms.id, roomId));
 
-      // Update all players to idle except winner
+      // Update all players to idle
       await db
         .update(players)
-        .set({ playerStatus: "idle" })
+        .set({ playerStatus: PlayerStatus.IDLE })
         .where(eq(players.roomId, roomId));
-
-      // Update winner's status
+    }
+  } else {
+    // Start the next pending pair if any
+    const nextPendingPair = currentRoundPairs.find(p => p.pairStatus === "pending");
+    if (nextPendingPair) {
       await db
-        .update(players)
-        .set({ playerStatus: "active" })
-        .where(eq(players.id, winnerId));
+        .update(pairs)
+        .set({ pairStatus: "ongoing" })
+        .where(eq(pairs.id, nextPendingPair.id));
+      
+      await assignCase(nextPendingPair.id);
     }
   }
 }
