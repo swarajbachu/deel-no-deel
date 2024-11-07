@@ -1,0 +1,1 @@
+ALTER TABLE "rooms" ADD COLUMN "daily_room_url" text;
