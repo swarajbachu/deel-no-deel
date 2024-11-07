@@ -15,11 +15,14 @@ import { GAME_CONFIG } from "@/config/gameConfig";
 import GameProgress from "@/components/game/GameProgress";
 import { PairsWithPlayerAndCaseHolder } from "@/server/db/schema";
 import { useSupabaseSubscription } from '@/hooks/useSupabaseSubscription'
-
+import { useLocalStorage } from 'usehooks-ts'
+import { sendPayment } from "@/utils/utils"
 export default function RoomPage() {
   const params = useParams();
   const session = useSession();
   const queryClient = useQueryClient();
+  const [paidRooms,setPaidRooms] = useLocalStorage<string[]>('paid-rooms',[])
+  
   const { data: room, isPending } = useQuery({
     queryKey: ["room", params.roomId],
     queryFn: () => getRoom({ roomId: params.roomId as string }),
@@ -38,6 +41,8 @@ export default function RoomPage() {
     roomId: params.roomId as string, 
     table: 'players' 
   });
+
+  const hasPaid = paidRooms.includes(params.roomId as string)
 
   const { mutateAsync: joinRoomMutation, isPending: joiningRoom } = useMutation({
     mutationFn: ({
@@ -89,6 +94,8 @@ export default function RoomPage() {
   }
   if (!room) return notFound();
 
+
+
   const player = room.players.find((p) => p.id === session.data?.user.id);
 
   if (player?.roomId !== room.id) {
@@ -101,7 +108,7 @@ export default function RoomPage() {
           <CardTitle>Join Game</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <Button
+           { hasPaid ? <Button
             onClick={async () =>
               await joinRoomMutation({
                 roomId: params.roomId as string,
@@ -113,14 +120,20 @@ export default function RoomPage() {
           >
             <Users className="mr-2 h-4 w-4" />
             Join Game
-          </Button>
+          </Button> : <Button onClick={async ()=>{
+              sendPayment().then((res)=>{
+                if(res.status === "success"){
+                  setPaidRooms([...paidRooms,params.roomId as string])
+                }
+              })
+          }} className="w-full">Pay 0.1 USDCE</Button>}
         </CardContent>
       </Card>
     );
   }
 
   const activePair = room.pairs.find((p) => p.pairStatus === "ongoing");
-
+  console.log({room})
   return (
     <div className="container mx-auto max-w-4xl py-8 px-4">
       <h1 className="text-3xl font-bold mb-8">Game Room</h1>

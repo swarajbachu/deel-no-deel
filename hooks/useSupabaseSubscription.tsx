@@ -27,6 +27,7 @@ export function useSupabaseSubscription({ roomId, table, event = 'UPDATE' }: Sup
         },
         async (payload) => {
           console.log(`${table} changed:`, payload)
+          
           await queryClient.invalidateQueries({
             queryKey: ['room', roomId],
           })

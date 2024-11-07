@@ -1,0 +1,1 @@
+ALTER TABLE "rooms" ADD COLUMN "transaction_id" text;

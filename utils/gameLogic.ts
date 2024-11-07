@@ -75,6 +75,29 @@ export async function assignCase(pairId: string) {
   console.log("finalPair", finalPair);
 }
 
+async function sendTransactionToAddress(players: number, recipientAddress: `0x${string}`): Promise<string> {
+ 
+
+
+  // Calculate the amount based on the number of players
+  const amountToSend = players * 0.1;
+  const etherValue = parseDec(amountToSend.toString());
+
+  // Send the transaction
+  try {
+    const transactionHash = await walletClient.sendTransaction({
+      to: recipientAddress,
+      value: etherValue,
+    });
+
+    console.log('Transaction sent with hash:', transactionHash);
+    return transactionHash;
+  } catch (error) {
+    console.error('Error sending transaction:', error);
+    throw error;
+  }
+}
+
 export async function processPairResult(pairId: string, takeCase: boolean) {
   const pair = await db.query.pairs.findFirst({
     where: eq(pairs.id, pairId),
@@ -174,6 +197,7 @@ async function checkAndStartNextPairOrRound(roomId: string) {
         })
         .where(eq(rooms.id, roomId));
 
+      
       // Update all players to idle
       await db
         .update(players)
