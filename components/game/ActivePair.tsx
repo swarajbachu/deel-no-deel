@@ -4,18 +4,27 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User } from "lucide-react";
 import { PairSelect, PairsWithPlayerAndCaseHolder } from "@/server/db/schema";
 import { CaseType } from "@/types/game";
+import { useSession } from "next-auth/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { makeDecision } from "@/server/actions/round";
 
 interface ActivePairProps {
   pair: PairsWithPlayerAndCaseHolder;
-  onDecision: (decision: boolean) => void;
 }
 
-export default function ActivePair({ pair, onDecision }: ActivePairProps) {
+export default function ActivePair({ pair }: ActivePairProps) {
   const [gameCompleted, setGameCompleted] = useState(false);
 
-  const handleGameDecision = (decision: boolean) => {
-    setGameCompleted(true);
-    onDecision(decision);
+  const session = useSession();
+  const queryClient = useQueryClient();
+
+  const isActivePlayer =
+    pair.player1?.id === session.data?.user?.id ||
+    pair.player2?.id === session.data?.user?.id;
+
+  const handleDecision = async (decision: boolean) => {
+    await makeDecision(pair.id, decision);
+    queryClient.invalidateQueries({ queryKey: ["room", pair.roomId] });
   };
 
   return (
@@ -38,9 +47,10 @@ export default function ActivePair({ pair, onDecision }: ActivePairProps) {
 
           {!gameCompleted && (
             <DealOrNoDeal
-              onDecision={handleGameDecision}
               caseHolder={pair.caseHolder}
               caseType={pair.caseType as CaseType}
+              activePlayer={isActivePlayer}
+              onDecision={handleDecision}
             />
           )}
         </CardContent>

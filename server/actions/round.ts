@@ -3,7 +3,7 @@
 import { db } from "@/server/db/db";
 import { pairs, players, rooms } from "@/server/db/schema";
 import { PlayerStatus } from "@/types/game";
-import { startGame } from "@/utils/gameLogic";
+import { processPairResult, startGame } from "@/utils/gameLogic";
 import { eq } from "drizzle-orm";
 import { GAME_CONFIG } from "@/config/gameConfig";
 
@@ -60,4 +60,9 @@ export async function joinRoom(roomId: string, playerId: string) {
   // Fetch updated room data
   const updatedRoom = await getRoom({ roomId });
   return updatedRoom;
+}
+
+export async function makeDecision(pairId: string, takeCase: boolean) {
+  await processPairResult(pairId, takeCase);
+  return pairId;
 }
