@@ -1,16 +1,10 @@
 import { db } from "@/server/db/db";
 import { PairInsert, pairs, players, rooms } from "@/server/db/schema";
-import {
-  CaseType,
-  GameStatus,
-  PlayerPair,
-  PlayerStatus,
-  Room,
-} from "@/types/game";
+import { CaseType, GameStatus, PlayerStatus } from "@/types/game";
 import { eq } from "drizzle-orm";
+import { GAME_CONFIG } from "@/config/gameConfig";
 
 export async function startGame(roomId: string) {
-  // Get room with players
   const room = await db.query.rooms.findFirst({
     where: eq(rooms.id, roomId),
     with: {
@@ -20,7 +14,6 @@ export async function startGame(roomId: string) {
 
   if (!room) throw new Error("Room not found");
 
-  // Update room status
   await db
     .update(rooms)
     .set({
@@ -29,7 +22,6 @@ export async function startGame(roomId: string) {
     })
     .where(eq(rooms.id, roomId));
 
-  // Create pairs for round 1
   const shuffledPlayers = shuffleArray([...room.players]);
   const pairsToInsert: PairInsert[] = [];
 
@@ -40,13 +32,12 @@ export async function startGame(roomId: string) {
       player2Id: shuffledPlayers[i + 1].id,
       completed: false,
       caseType: CaseType.SAFE,
+      pairStatus: i === 0 ? "ongoing" : "pending",
     });
   }
 
-  // Insert all pairs
   await db.insert(pairs).values(pairsToInsert);
 
-  // Get first pair and set it as current
   const firstPair = pairsToInsert[0];
   if (!firstPair.id) throw new Error("No pairs found");
   await assignCase(firstPair.id);
@@ -118,3 +109,35 @@ function shuffleArray<T>(array: T[]): T[] {
   }
   return array;
 }
+
+// export async function joinRoom(roomId: string, playerId: string) {
+//   console.log(roomId, playerId, "roomId, playerId");
+//   const room = await db.query.rooms.findFirst({
+//     where: eq(rooms.id, roomId),
+//     with: {
+//       players: true,
+//     },
+//   });
+//   console.log(room, "room generated");
+
+//   if (!room) {
+//     return { error: "Room not found" };
+//   }
+
+//   if (room.players.length >= 8) {
+//     return { error: "Room is full" };
+//   }
+
+//   await db
+//     .update(players)
+//     .set({
+//       roomId: room.id,
+//       playerStatus: PlayerStatus.ACTIVE,
+//     })
+//     .where(eq(players.id, playerId));
+//   if (room.players.length === 8) {
+//     startGame(room.id);
+//   }
+
+//   return room;
+// }

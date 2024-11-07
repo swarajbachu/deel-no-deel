@@ -4,6 +4,7 @@ import { PlayerStatus } from "@/types/game";
 import { startGame } from "@/utils/gameLogic";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
+import { GAME_CONFIG } from "@/config/gameConfig";
 
 export async function POST(
   req: NextRequest,
@@ -22,7 +23,7 @@ export async function POST(
     return NextResponse.json({ error: "Room not found" }, { status: 404 });
   }
 
-  if (room.players.length >= 8) {
+  if (room.players.length >= GAME_CONFIG.PLAYERS_PER_ROOM) {
     return NextResponse.json({ error: "Room is full" }, { status: 400 });
   }
 
@@ -35,8 +36,8 @@ export async function POST(
     })
     .where(eq(players.id, playerId));
 
-  if (room.players.length === 8) {
-    startGame(room.id);
+  if (room.players.length === GAME_CONFIG.PLAYERS_PER_ROOM - 1) {
+    await startGame(room.id);
   }
 
   return NextResponse.json(room);
