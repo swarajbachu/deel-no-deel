@@ -668,6 +668,28 @@ packages:
   '@scure/bip39@1.4.0':
     resolution: {integrity: sha512-BEEm6p8IueV/ZTfQLp/0vhw4NPnT9oWf5+28nvmeUICjP99f4vr2d+qc7AVGDDtwRep6ifR43Yed9ERVmiITzw==}
 
+  '@stream-io/node-sdk@0.4.4':
+    resolution: {integrity: sha512-cwkiHN+s8luSFITK11B+Zsh8qfS2X8PTq49G7nf9lSar5vdvz7aLEe1mxXGu2JH/FgGxlHgIZCACtdZ8l7wXEw==}
+    engines: {node: '>=18.0.0'}
+
+  '@stream-io/video-client@1.10.5':
+    resolution: {integrity: sha512-yB4QGHY/iyRdDgVALlFg960gMSkutrmDsl0MBhiQJe20xK5Qjk90dswxFbD1YEMpoPfn3N/0a4mundklxkQJuQ==}
+
+  '@stream-io/video-filters-web@0.1.4':
+    resolution: {integrity: sha512-5jEWxlrbvoE0AIsHR4WYeFL3vh+fT4eNSrN9XYTu/cyNRrPh20M2x2t+ZSobJTBtiQ7Vjn/WP4OGVkIw1nimQQ==}
+
+  '@stream-io/video-react-bindings@1.1.16':
+    resolution: {integrity: sha512-pCiu6Vx/TBQKhWQf1kKQ8xBW7jzSJ/lyWyGPv3j5nmQZIBDXAUrdotqRKbGlTsDW3CBKxSbUjChU9W+K20H3UQ==}
+    peerDependencies:
+      '@stream-io/video-client': ^1.10.5
+      react: ^17 || ^18 || ^19
+
+  '@stream-io/video-react-sdk@1.7.11':
+    resolution: {integrity: sha512-zZ7pZyjIk2IcDRui3soI1kdwhtuG1JZGpTtK/5kL1yAvHkkEy4ZI/5lPXr9madjLyx2EE/Cuydc4ThDmVCijFA==}
+    peerDependencies:
+      react: ^17 || ^18 || ^19
+      react-dom: ^17 || ^18 || ^19
+
   '@supabase/auth-js@2.65.1':
     resolution: {integrity: sha512-IA7i2Xq2SWNCNMKxwmPlHafBQda0qtnFr8QnyyBr+KaSxoXXqEzFCnQ1dGTy6bsZjVBgXu++o3qrDypTspaAPw==}
 
@@ -2971,6 +2993,59 @@ snapshots:
       '@noble/hashes': 1.5.0
       '@scure/base': 1.1.9
 
+  '@stream-io/node-sdk@0.4.4':
+    dependencies:
+      '@types/jsonwebtoken': 9.0.7
+      '@types/node': 20.16.1
+      jsonwebtoken: 9.0.2
+      uuid: 9.0.1
+
+  '@stream-io/video-client@1.10.5':
+    dependencies:
+      '@protobuf-ts/runtime': 2.9.4
+      '@protobuf-ts/runtime-rpc': 2.9.4
+      '@protobuf-ts/twirp-transport': 2.9.4
+      '@types/ws': 8.5.13
+      axios: 1.7.7
+      base64-js: 1.5.1
+      isomorphic-ws: 5.0.0(ws@8.18.0)
+      rxjs: 7.8.1
+      sdp-transform: 2.14.2
+      ua-parser-js: 1.0.39
+      webrtc-adapter: 8.2.3
+      ws: 8.18.0
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - utf-8-validate
+
+  '@stream-io/video-filters-web@0.1.4':
+    dependencies:
+      wasm-feature-detect: 1.8.0
+
+  '@stream-io/video-react-bindings@1.1.16(@stream-io/video-client@1.10.5)(react@18.3.1)':
+    dependencies:
+      '@stream-io/video-client': 1.10.5
+      i18next: 23.16.4
+      react: 18.3.1
+      rxjs: 7.8.1
+
+  '@stream-io/video-react-sdk@1.7.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@floating-ui/react': 0.26.27(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@stream-io/video-client': 1.10.5
+      '@stream-io/video-filters-web': 0.1.4
+      '@stream-io/video-react-bindings': 1.1.16(@stream-io/video-client@1.10.5)(react@18.3.1)
+      chart.js: 4.4.6
+      clsx: 2.1.1
+      react: 18.3.1
+      react-chartjs-2: 5.2.0(chart.js@4.4.6)(react@18.3.1)
+      react-dom: 18.3.1(react@18.3.1)
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - utf-8-validate
+
   '@supabase/auth-js@2.65.1':
     dependencies:
       '@supabase/node-fetch': 2.6.15
@@ -4185,6 +4260,10 @@ snapshots:
 
   isexe@2.0.0: {}
 
+  isomorphic-ws@5.0.0(ws@8.18.0):
+    dependencies:
+      ws: 8.18.0
+
   isows@1.0.6(ws@8.18.0):
     dependencies:
       ws: 8.18.0
@@ -5024,6 +5103,8 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   uuid@8.3.2: {}
+
+  uuid@9.0.1: {}
 
   viem@2.21.42(typescript@5.5.4)(zod@3.23.8):
     dependencies:
