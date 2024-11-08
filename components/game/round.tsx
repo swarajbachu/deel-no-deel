@@ -9,7 +9,7 @@ import { CaseType } from "@/types/game";
 import { PlayerSelect } from "@/server/db/schema";
 import { useSession } from "next-auth/react";
 
-const TIMER_DURATION = 30;
+const TIMER_DURATION = 1030;
 
 interface DealOrNoDealProps {
   onDecision: (decision: boolean) => void;
@@ -92,6 +92,7 @@ export default function DealOrNoDeal({
             initial={false}
             animate={{ rotateY: -20, rotateX: isCaseOpened ? 15 : 0 }}
             transition={{ duration: 0.5 }}
+            onClick={handleCaseHolderOpen}
             style={{ transformStyle: "preserve-3d" }}
           >
             {/* Suitcase body */}
@@ -137,15 +138,13 @@ export default function DealOrNoDeal({
                 transition={{ delay: 0.3 }}
                 style={{ transform: "translateZ(10px) rotateX(-15deg)" }}
               >
-                {isCaseHolder && (
-                  <div
-                    className={`p-4 ${
-                      caseType === CaseType.SAFE ? "bg-green-500" : "bg-red-500"
-                    } rounded-lg shadow-inner`}
-                  >
-                    <p className="text-3xl font-bold text-white">{caseType}</p>
-                  </div>
-                )}
+                <div
+                  className={`p-4 ${
+                    caseType === CaseType.SAFE ? "bg-green-500" : "bg-red-500"
+                  } rounded-lg shadow-inner`}
+                >
+                  <p className="text-3xl font-bold text-white">{caseType}</p>
+                </div>
               </motion.div>
             </motion.div>
           </motion.div>
@@ -176,9 +175,7 @@ export default function DealOrNoDeal({
           </div>
         ) : (
           <div className="mt-4 text-center">
-            <p className="text-sm text-gray-600">
-              spectating...
-            </p>
+            <p className="text-sm text-gray-600">spectating...</p>
           </div>
         )}
 

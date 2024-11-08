@@ -15,6 +15,8 @@ import { GAME_CONFIG } from "@/config/gameConfig";
 import GameProgress from "@/components/game/GameProgress";
 import { PairsWithPlayerAndCaseHolder } from "@/server/db/schema";
 import { useSupabaseSubscription } from "@/hooks/useSupabaseSubscription";
+import StreamCallComponent from "@/components/call/stream-call";
+import useStream from "@/hooks/useStream";
 
 export default function RoomPage() {
   const params = useParams();
@@ -25,7 +27,7 @@ export default function RoomPage() {
     queryFn: () => getRoom({ roomId: params.roomId as string }),
     refetchInterval: 3000,
   });
-  const [dailyRoomUrl, setDailyRoomUrl] = useState<string | null>(null);
+  const client = useStream();
 
   useSupabaseSubscription({
     roomId: params.roomId as string,
@@ -131,7 +133,7 @@ export default function RoomPage() {
   return (
     <div className="container mx-auto max-w-4xl py-8 px-4">
       <h1 className="text-3xl font-bold mb-8">Game Room</h1>
-
+      {/* <StreamCallComponent callId={room.id} /> */}
       <div className="space-y-6">
         <Card>
           <CardContent className="pt-6">

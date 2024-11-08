@@ -95,7 +95,7 @@ export default function GameProgress({ currentRound, totalRounds, pairs, isLoadi
                     }`}
                   >
                     <div className="flex flex-col gap-2">
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between items-center flex-wrap">
                         <div className="flex items-center gap-2">
                           <User className="w-4 h-4" />
                           <span>{formatPlayerName(pair.player1?.id, pair.player1?.name)}</span>
