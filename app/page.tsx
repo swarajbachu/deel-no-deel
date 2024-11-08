@@ -1,163 +1,241 @@
+"use client";
+
 import { SignIn } from "@/components/SignIn";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { VerifyBlock } from "@/components/Verify";
-import { Menu, X, ChevronRight, Briefcase, Shield, Coins, Users } from "lucide-react"
+import { motion } from "framer-motion";
+import {
+  Users,
+  Shield,
+  Swords,
+  Trophy,
+  UserPlus,
+  Gamepad2,
+  Crown,
+  Coins,
+  Sparkles,
+  Zap,
+  Lock,
+} from "lucide-react";
 import Image from "next/image";
-
+import React from "react";
 
 export default function Home() {
   return (
     <main className="flex flex-col min-h-screen bg-gradient-to-b from-background to-muted">
-      
-        {/* Hero Section */}
+      {/* Hero Section */}
+      <section className="w-full py-12 md:py-24 lg:py-32 overflow-hidden relative">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="px-4 md:px-6 relative z-10"
+        >
+          <div className="flex flex-col items-center justify-center text-center max-w-3xl mx-auto">
+            <div className="space-y-4">
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500">
+                Deal or No Deal: World ID Edition
+              </h1>
+              <p className="text-muted-foreground md:text-xl">
+                Join 2-8 players in an intense elimination game of strategy and deception. Verify your humanity, compete for crypto rewards, and become the ultimate champion!
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 mt-8">
+              <SignIn />
+              <Button variant="outline" className="group">
+                Watch Tutorial
+                <Gamepad2 className="ml-2 h-4 w-4 group-hover:rotate-12 transition-transform" />
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      </section>
 
-        <section className="w-full py-12 md:py-24 lg:py-32 overflow-hidden relative">
-       
-          {/* SVG Definitions */}
-          <svg className="hidden">
-            <defs>
-              <symbol id="icon-dollar" viewBox="0 0 24 24">
-                <path d="M12,1V23M17,5H9.5a3.5,3.5,0,0,0,0,7h5a3.5,3.5,0,0,1,0,7H6" 
-                      stroke="currentColor" strokeWidth="2" fill="none" />
-              </symbol>
-              <symbol id="icon-suitcase" viewBox="0 0 24 24">
-                <rect x="3" y="7" width="18" height="14" rx="2" ry="2" 
-                      stroke="currentColor" strokeWidth="2" fill="none" />
-                <path d="M8,7V5a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V7" 
-                      stroke="currentColor" strokeWidth="2" fill="none" />
-                <line x1="12" y1="12" x2="12" y2="16" 
-                      stroke="currentColor" strokeWidth="2" />
-                <line x1="3" y1="13" x2="21" y2="13" 
-                      stroke="currentColor" strokeWidth="2" />
-              </symbol>
-            </defs>
-          </svg>
+      {/* Why World ID Section */}
+      <section className="w-full py-12 md:py-24 bg-gradient-to-r from-primary/5 to-purple-500/5">
+        <div className="px-4 md:px-6 max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-center mb-12">Why Play With Us?</h2>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                icon: Shield,
+                title: "Sybil-Resistant Gaming",
+                description: "World ID verification ensures each player is unique and human, preventing multi-accounting and maintaining fair play."
+              },
+              {
+                icon: Coins,
+                title: "Crypto Rewards",
+                description: "Win and withdraw your crypto prizes instantly. No delays, no complications - just pure gaming excitement."
+              },
+              {
+                icon: Zap,
+                title: "Mini App Experience",
+                description: "Quick to load, easy to play. Jump into games instantly with our optimized mini app architecture."
+              },
+              {
+                icon: Users,
+                title: "Flexible Lobbies",
+                description: "Create or join rooms with 2, 4, or 8 players. More players mean more rounds and bigger prizes!"
+              },
+              {
+                icon: Lock,
+                title: "Secure & Transparent",
+                description: "Every game action is verified and secured through World ID's proof of personhood protocol."
+              },
+              {
+                icon: Sparkles,
+                title: "Fair Competition",
+                description: "Everyone plays on equal terms - no bots, no duplicate accounts, just pure strategy and skill."
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="flex flex-col items-start p-6 bg-background/80 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <div className="p-3 bg-primary/10 rounded-full mb-4">
+                  <feature.icon className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          {/* Floating Elements */}
-          {[...Array(100)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute opacity-10 text-primary"
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                transform: `scale(${0.5 + Math.random() * 0.5})`,
-                animation: `float ${5 + Math.random() * 5}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 5}s`,
-              }}
+      {/* Game Flow Section */}
+      <section className="w-full py-12 md:py-24 bg-muted/50">
+        <div className="px-4 md:px-6">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-center mb-12">How to Play</h2>
+          <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
+            {[
+              {
+                icon: Users,
+                title: "1. Join a Room",
+                description: "Enter a game room with 2, 4, or 8 players. The game begins when the room is full.",
+                animation: "fade-right"
+              },
+              {
+                icon: Swords,
+                title: "2. Face Your Opponent",
+                description: "Get paired randomly with another player for an intense case showdown.",
+                animation: "fade-up"
+              },
+              {
+                icon: Trophy,
+                title: "3. Survive & Advance",
+                description: "Win your duel to advance to the next round. Lose and you're eliminated.",
+                animation: "fade-left"
+              }
+            ].map((step, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.2 }}
+                className="flex flex-col items-center text-center space-y-4 p-6 bg-background/80 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <div className="p-3 bg-primary/10 rounded-full">
+                  <step.icon className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-bold">{step.title}</h3>
+                <p className="text-muted-foreground">{step.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Case Game Rules Section */}
+      <section className="w-full py-12 md:py-24 bg-gradient-to-r from-primary/5 to-purple-500/5">
+        <div className="px-4 md:px-6 max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-center mb-12">Case Game Rules</h2>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                icon: Crown,
+                title: "Case Assignment",
+                description: "One player becomes the case holder randomly"
+              },
+              {
+                icon: Shield,
+                title: "Declaration",
+                description: "Case holder declares SAFE or ELIMINATE"
+              },
+              {
+                icon: Gamepad2,
+                title: "Decision Time",
+                description: "Other player decides to take or leave the case"
+              },
+              {
+                icon: Trophy,
+                title: "Winner Selection",
+                description: "Winner determined by case content and decision"
+              }
+            ].map((rule, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.1 }}
+                className="flex flex-col items-center text-center p-6 bg-background/40 rounded-xl backdrop-blur-sm"
+              >
+                <rule.icon className="h-8 w-8 text-primary mb-4" />
+                <h3 className="text-lg font-semibold mb-2">{rule.title}</h3>
+                <p className="text-muted-foreground text-sm">{rule.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Win Conditions Section */}
+      <section className="w-full py-12 md:py-24 bg-muted/50">
+        <div className="px-4 md:px-6 max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-center mb-8">Win Conditions</h2>
+          <div className="grid gap-6">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              className="p-6 bg-background/80 rounded-xl"
             >
-              <svg className="w-10 h-10">
-                <use xlinkHref={Math.random() > 0.5 ? "#icon-dollar" : "#icon-suitcase"} />
-              </svg>
-            </div>
-          ))}
-
-          <div className="px-4 md:px-6 relative z-10">
-            <div className="flex flex-col items-center justify-center text-center max-w-3xl mx-auto">
-              <div className="space-y-4">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500">
-                  Deel No Deel: The Ultimate Immersive Game
-                </h1>
-                <p className="text-muted-foreground md:text-xl">
-                  Join the excitement on Worldchain. Open briefcases, make deals, and win big with your World ID!
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <Button  className="animate-pulse">
-                  Play Now <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
-                <SignIn />
-              </div>
-            </div>
+              <h3 className="text-xl font-bold mb-4">SAFE Case Scenarios:</h3>
+              <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                <li>Take Decision: Case holder wins</li>
+                <li>Leave Decision: Non-holder wins</li>
+              </ul>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              className="p-6 bg-background/80 rounded-xl"
+            >
+              <h3 className="text-xl font-bold mb-4">ELIMINATE Case Scenarios:</h3>
+              <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                <li>Take Decision: Non-holder wins</li>
+                <li>Leave Decision: Case holder wins</li>
+              </ul>
+            </motion.div>
           </div>
-        </section>
+        </div>
+      </section>
 
-
-        {/* How to Play Section */}
-        <section id="how-to-play" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
-          <div className="px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-8">How to Play</h2>
-            <div className="grid gap-8 md:grid-cols-3">
-              {[
-                { icon: Shield, title: "Connect with World ID", description: "Verify your identity using World ID to join the game securely." },
-                { icon: Briefcase, title: "Choose Your Briefcase", description: "Select one of the 26 briefcases, each containing a hidden amount." },
-                { icon: Coins, title: "Deel No Deel?", description: "Open cases, receive offers, and decide whether to make a deal or keep playing." }
-              ].map((step, index) => (
-                <div key={index} className="flex flex-col items-center text-center space-y-4 p-6 bg-background rounded-lg shadow-lg transition-transform hover:scale-105">
-                  <div className="p-4 bg-primary text-primary-foreground rounded-full">
-                    <step.icon className="h-8 w-8" />
-                  </div>
-                  <h3 className="text-xl font-bold">{step.title}</h3>
-                  <p className="text-muted-foreground">{step.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section id="features" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">Game Features</h2>
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-              {[
-                { icon: Briefcase, title: "Ownership", description: "Experience true ownership and transparency with Worldchain technology." },
-                { icon: Shield, title: "Secure Identity", description: "Play with confidence using World ID verification for enhanced security." },
-                { icon: Coins, title: "Real Crypto Prizes", description: "Win and withdraw real cryptocurrency directly to your wallet." },
-                { icon: Users, title: "Global Community", description: "Connect with players worldwide and compete for the top spot on our leaderboard." }
-              ].map((feature, index) => (
-                <div key={index} className="flex flex-col items-center text-center space-y-4 p-6 bg-muted rounded-lg transition-colors hover:bg-muted/80">
-                  <feature.icon className="h-12 w-12 text-primary" />
-                  <h3 className="text-xl font-bold">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Animation Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-primary/20 to-purple-500/20 overflow-hidden">
-          <div className="px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl">Ready to Make a Deel?</h2>
-              </div>
-            
-            </div>
-          </div>
-          <div className="mt-12 px-4 md:px-6 relative">
-            <div className="relative w-full h-[300px] sm:h-[400px] overflow-hidden rounded-lg">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary to-purple-500 opacity-75" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-4xl sm:text-6xl font-bold text-white animate-float">Deel No Deel</div>
-              </div>
-              {[...Array(20)].map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute w-4 h-4 bg-white rounded-full animate-float"
-                  style={{
-                    top: `${Math.random() * 100}%`,
-                    left: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 2}s`,
-                    animationDuration: `${3 + Math.random() * 2}s`
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
- 
-
-      {/* <div className="container mx-auto max-w-4xl w-full items-center space-y-8">
-        <h1 className="text-4xl font-bold  mb-12">
-          World ID Integration
-        </h1>
-        <SignIn />
-        <VerifyBlock />
-        <PayBlock />
-      </div> */}
+      {/* CTA Section */}
+      <section className="w-full py-16 md:py-24 bg-gradient-to-r from-primary to-purple-500">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="px-4 md:px-6 text-center"
+        >
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-white mb-8">
+            Ready to Test Your Strategy?
+          </h2>
+          <SignIn />
+          <p className="mt-4 text-white/80">Join the ultimate elimination challenge!</p>
+        </motion.div>
+      </section>
     </main>
   );
 }
