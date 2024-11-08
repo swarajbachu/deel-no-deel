@@ -1,5 +1,5 @@
 {
-  "id": "15c62ce3-d49f-476f-ae75-fd0497598002",
+  "id": "c2bce566-3318-4967-a3c0-424728a02ef7",
   "prevId": "d359f557-6314-41e8-a33f-ba54a8dde30b",
   "version": "7",
   "dialect": "postgresql",
@@ -267,18 +267,18 @@
           "notNull": true,
           "default": 0
         },
+        "transaction_id": {
+          "name": "transaction_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "human_touch": {
           "name": "human_touch",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
           "default": false
-        },
-        "daily_room_url": {
-          "name": "daily_room_url",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
         },
         "created_at": {
           "name": "created_at",

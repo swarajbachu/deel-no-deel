@@ -1,5 +1,12 @@
-import { MiniKit } from "@worldcoin/minikit-js"
 
+import {
+    MiniKit,
+    tokenToDecimals,
+    Tokens,
+    PayCommandInput,
+    ResponseEvent,
+    MiniAppPaymentPayload,
+  } from "@worldcoin/minikit-js";
 // export const signInWithWallet = async () => {
 // 	const res = await fetch(`/api/nonce`)
 // 	const { nonce } = await res.json()
@@ -46,6 +53,48 @@ export const signInWithWallet = async () => {
         console.log("response",response)
    
 	}
+}
+
+
+export const sendPayment = async () => {
+    const res = await fetch("/api/initiate-payment", {
+      method: "POST",
+    });
+  
+    const { id } = await res.json();
+  
+    const payload: PayCommandInput = {
+      reference: id,
+      to: "0x8b5E4bA136D3a483aC9988C20CBF0018cC687E6f",
+      tokens: [ 
+        {
+          symbol: Tokens.USDCE,
+          token_amount: tokenToDecimals(0.1, Tokens.USDCE).toString(),
+        },
+      ],
+      description: "Watch this is a test",
+    };
+  
+    
+    // if (MiniKit.isInstalled(true)) {
+    //   console.log("MiniKit is not installed");
+    //   return
+    // }
+  
+    const { finalPayload } = await MiniKit.commandsAsync.pay(payload)
+    console.log({finalPayload})
+    if (finalPayload.status == 'success') {
+      const res = await fetch(`/api/confirm-payment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({payload:finalPayload}),
+      })
+      const payment = await res.json()
+      if (payment.success) {
+        // Congrats your payment was successful!
+      }
+    }
+    return finalPayload
 }
 
 export const NONCE = "jskdjdksfhlsfjslfjldsfjklsdjfh"

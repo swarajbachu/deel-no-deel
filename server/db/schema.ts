@@ -26,6 +26,7 @@ export const rooms = pgTable("rooms", {
   currentRound: integer("current_round").notNull().default(0),
   winnerId: text("winner_id"),
   entryPrice: integer("entry_price").notNull().default(0),
+  transactionId: text("transaction_id"),
   humanTouch: boolean("human_touch").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

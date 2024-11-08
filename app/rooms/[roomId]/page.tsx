@@ -1,9 +1,9 @@
 "use client";
 
-import { notFound, useParams } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, Crown } from "lucide-react";
+import { Users, Crown, ExternalLink } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRoom, joinRoom } from "@/server/actions/round";
 import { useSession } from "next-auth/react";
@@ -14,14 +14,18 @@ import ActivePair from "@/components/game/ActivePair";
 import { GAME_CONFIG } from "@/config/gameConfig";
 import GameProgress from "@/components/game/GameProgress";
 import { PairsWithPlayerAndCaseHolder } from "@/server/db/schema";
-import { useSupabaseSubscription } from "@/hooks/useSupabaseSubscription";
-import StreamCallComponent from "@/components/call/stream-call";
+import { useSupabaseSubscription } from '@/hooks/useSupabaseSubscription'
+import { useLocalStorage } from 'usehooks-ts'
+import { sendPayment } from "@/utils/utils"
 import useStream from "@/hooks/useStream";
 
 export default function RoomPage() {
   const params = useParams();
+  const router = useRouter();
   const session = useSession();
   const queryClient = useQueryClient();
+  const [paidRooms, setPaidRooms] = useLocalStorage<string[]>('paid-rooms', [])
+  
   const { data: room, isPending } = useQuery({
     queryKey: ["room", params.roomId],
     queryFn: () => getRoom({ roomId: params.roomId as string }),
@@ -42,6 +46,8 @@ export default function RoomPage() {
     table: "players",
   });
 
+  const hasPaid = paidRooms.includes(params.roomId as string)
+
   const { mutateAsync: joinRoomMutation, isPending: joiningRoom } = useMutation(
     {
       mutationFn: ({
@@ -52,13 +58,8 @@ export default function RoomPage() {
         playerId: string;
       }) => joinRoom(roomId, playerId),
       onMutate: async (variables) => {
-        // Cancel outgoing refetches
         await queryClient.cancelQueries({ queryKey: ["room", params.roomId] });
-
-        // Snapshot the previous value
         const previousRoom = queryClient.getQueryData(["room", params.roomId]);
-
-        // Optimistically update room
         queryClient.setQueryData(["room", params.roomId], (old: any) => ({
           ...old,
           players: [
@@ -71,11 +72,9 @@ export default function RoomPage() {
             },
           ],
         }));
-
         return { previousRoom };
       },
       onError: (err, variables, context) => {
-        // Revert the optimistic update
         if (context?.previousRoom) {
           queryClient.setQueryData(
             ["room", params.roomId],
@@ -84,7 +83,6 @@ export default function RoomPage() {
         }
       },
       onSettled: () => {
-        // Refetch to ensure consistency
         queryClient.invalidateQueries({ queryKey: ["room", params.roomId] });
       },
     }
@@ -110,7 +108,7 @@ export default function RoomPage() {
           <CardTitle>Join Game</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <Button
+           { hasPaid ? <Button
             onClick={async () =>
               await joinRoomMutation({
                 roomId: params.roomId as string,
@@ -122,7 +120,13 @@ export default function RoomPage() {
           >
             <Users className="mr-2 h-4 w-4" />
             Join Game
-          </Button>
+          </Button> : <Button onClick={async ()=>{
+              sendPayment().then((res)=>{
+                if(res.status === "success"){
+                  setPaidRooms([...paidRooms,params.roomId as string])
+                }
+              })
+          }} className="w-full">Pay 0.1 USDCE</Button>}
         </CardContent>
       </Card>
     );
@@ -163,6 +167,16 @@ export default function RoomPage() {
                   <Crown className="h-5 w-5 text-yellow-500" />
                   <p className="text-xl font-semibold">{room.winner.name}</p>
                 </div>
+                {room.transactionId && (
+                  <Button
+                    variant="outline"
+                    className="mt-2"
+                    onClick={() => router.push(`https://worldscan.org/tx/${room.transactionId}`)}
+                  >
+                    Show Payout Proof
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </Button>
+                )}
               </div>
             )}
           </CardContent>

@@ -42,7 +42,12 @@ export default function Header() {
         <span className="font-bold text-lg hidden sm:inline-block">Deel No Deel</span>
       </Link>
       <nav className="ml-auto hidden md:flex gap-4 items-center">
-        <Button >Play Now</Button>
+      <Button asChild>
+          <Link href="/rooms/join">Join Room</Link>
+          </Button>
+         <Button asChild>
+          <Link href="/rooms/create">Create Room</Link>
+          </Button>
         <SignIn />
       </nav>
       <button
@@ -54,7 +59,12 @@ export default function Header() {
     </div>
     {mobileMenuOpen && (
       <nav className="md:hidden p-4 bg-background border-t flex flex-col gap-4">
-         <Button >Play Now</Button>
+          <Button asChild>
+          <Link href="/rooms/join">Join Room</Link>
+          </Button>
+         <Button asChild>
+          <Link href="/rooms/create">Create Room</Link>
+          </Button>
          <SignIn />
       </nav>
     )}

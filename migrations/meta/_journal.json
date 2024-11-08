@@ -40,15 +40,8 @@
     {
       "idx": 5,
       "version": "7",
-      "when": 1731010382212,
-      "tag": "0005_elite_the_stranger",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1731012938437,
-      "tag": "0006_kind_chameleon",
+      "when": 1731015495756,
+      "tag": "0005_panoramic_harpoon",
       "breakpoints": true
     }
   ]
