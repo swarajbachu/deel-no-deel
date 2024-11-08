@@ -8,8 +8,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRoom, joinRoom } from "@/server/actions/round";
 import { useSession } from "next-auth/react";
 import { Badge } from "@/components/ui/badge";
-import { useEffect, useState } from "react";
-import { supabaseClient } from "@/lib/supabase-client";
+
 import ActivePair from "@/components/game/ActivePair";
 import { GAME_CONFIG } from "@/config/gameConfig";
 import GameProgress from "@/components/game/GameProgress";
@@ -26,6 +25,9 @@ export default function RoomPage() {
   const queryClient = useQueryClient();
   const [paidRooms, setPaidRooms] = useLocalStorage<string[]>('paid-rooms', [])
   
+  const roomId = params.roomId as string;
+  const roomUrl = `https://deel-no-deel.vercel.app/room/${roomId}`;
+
   const { data: room, isPending } = useQuery({
     queryKey: ["room", params.roomId],
     queryFn: () => getRoom({ roomId: params.roomId as string }),
@@ -138,8 +140,32 @@ export default function RoomPage() {
 
   return (
     <div className="container mx-auto max-w-4xl py-8 px-4">
-      <h1 className="text-3xl font-bold mb-8">Game Room</h1>
-      {/* <StreamCallComponent callId={room.id} /> */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-4">Game Room</h1>
+        <Card className="mb-4">
+          <CardContent className="pt-6">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">Room ID:</p>
+                <p className="font-mono">{roomId}</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">Room URL:</p>
+                <div className="flex items-center gap-2">
+                  <p className="font-mono">{roomUrl}</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigator.clipboard.writeText(roomUrl)}
+                  >
+                    Copy
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
       <div className="space-y-6">
         <Card>
           <CardContent className="pt-6">
