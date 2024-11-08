@@ -103,6 +103,7 @@ export default function RoomPage() {
       return <div>Room is full</div>;
     }
     return (
+      <section className="flex justify-center items-center h-screen px-4">
       <Card className="w-full max-w-md mx-auto">
         <CardHeader>
           <CardTitle>Join Game</CardTitle>
@@ -129,6 +130,7 @@ export default function RoomPage() {
           }} className="w-full">Pay 0.1 USDCE</Button>}
         </CardContent>
       </Card>
+      </section>
     );
   }
 

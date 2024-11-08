@@ -24,24 +24,24 @@ export default function Home() {
   return (
     <main className="flex flex-col min-h-screen bg-gradient-to-b from-background to-muted">
       {/* Hero Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 overflow-hidden relative">
+      <section className="w-full py-8 md:py-24 lg:py-32 overflow-hidden relative px-4 md:px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="px-4 md:px-6 relative z-10"
+          className="relative z-10"
         >
           <div className="flex flex-col items-center justify-center text-center max-w-3xl mx-auto">
-            <div className="space-y-4">
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500">
+            <div className="space-y-3 md:space-y-4">
+              <h1 className="text-2xl md:text-3xl lg:text-5xl xl:text-6xl/none font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500">
                 Deal or No Deal: World ID Edition
               </h1>
-              <p className="text-muted-foreground md:text-xl">
+              <p className="text-sm md:text-base lg:text-xl text-muted-foreground max-w-2xl mx-auto">
                 Join 2-8 players in an intense elimination game of strategy and deception. Verify your humanity, compete for crypto rewards, and become the ultimate champion!
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 mt-8">
+            <div className="flex flex-col sm:flex-row gap-3 mt-6 md:mt-8 w-full sm:w-auto">
               <SignIn />
-              <Button variant="outline" className="group">
+              <Button variant="outline" className="group w-full sm:w-auto">
                 Watch Tutorial
                 <Gamepad2 className="ml-2 h-4 w-4 group-hover:rotate-12 transition-transform" />
               </Button>
@@ -54,7 +54,7 @@ export default function Home() {
       <section className="w-full py-12 md:py-24 bg-gradient-to-r from-primary/5 to-purple-500/5">
         <div className="px-4 md:px-6 max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-center mb-12">Why Play With Us?</h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {[
               {
                 icon: Shield,
@@ -92,13 +92,13 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="flex flex-col items-start p-6 bg-background/80 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                className="flex flex-col items-start p-4 md:p-6 bg-background/80 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                <div className="p-3 bg-primary/10 rounded-full mb-4">
-                  <feature.icon className="h-6 w-6 text-primary" />
+                <div className="p-2 md:p-3 bg-primary/10 rounded-full mb-3 md:mb-4">
+                  <feature.icon className="h-5 w-5 md:h-6 md:w-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
+                <h3 className="text-lg md:text-xl font-bold mb-2">{feature.title}</h3>
+                <p className="text-sm md:text-base text-muted-foreground">{feature.description}</p>
               </motion.div>
             ))}
           </div>

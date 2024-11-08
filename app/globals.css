@@ -20,6 +20,13 @@
   .text-balance {
     text-wrap: balance;
   }
+  .safe-top {
+    padding-top: calc(var(--header-height) + 1rem);
+  }
+  
+  .safe-bottom {
+    padding-bottom: calc(var(--mobile-nav-height) + 1rem);
+  }
 }
 
 @layer base {
@@ -54,6 +61,8 @@
     --chart-8: 150 50% 50%;
     --chart-9: 30 80% 50%;
     --chart-10: 0 70% 50%;
+    --header-height: 3.5rem;
+    --mobile-nav-height: 4rem;
   }
   .dark {
     --background: 240 36% 5%;
